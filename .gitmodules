@@ -1,0 +1,6 @@
+[submodule "references/event-store-adapter-rs"]
+	path = references/event-store-adapter-rs
+	url = git@github.com:j5ik2o/event-store-adapter-rs.git
+[submodule "references/cqrs-es-example-rs"]
+	path = references/cqrs-es-example-rs
+	url = git@github.com:j5ik2o/cqrs-es-example-rs.git
