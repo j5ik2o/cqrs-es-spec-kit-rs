@@ -22,25 +22,25 @@
 **規模・スコープ**: 想定ユーザー数やユースケース範囲
 **フロント/BFF/GraphQL**: Next.js UI, Next.js API Routes(BFF), GraphQL サーバ（ドメインロジック）の利用方法と分担
 **永続化/投影**: コマンド側 DynamoDB、リードモデル MySQL、Read Model Updater（AWS Lambda）の構成と差分
-**ワークスペース/パッケージ**: `references/cqrs-es-example-js/packages` 構成との対応、採用するワークスペースツール、層ごとの依存ルール
+**ワークスペース/パッケージ**: `references/cqrs-es-example-rs/modules` 構成との対応、採用するワークスペースツール、層ごとの依存ルール
 
 ## 憲章準拠チェック
 
 *ゲート条件: フェーズ0（リサーチ）着手前とフェーズ1（設計）完了時に必ず確認する。*
 
-- ドメイン中心アーキテクチャ: 依存方向が `interfaces → application → domain` のみになっているか。
+- ドメイン中心アーキテクチャ: 依存方向が `interfaces → processor → domain` のみになっているか。
 - 仕様駆動の意思決定: `/specs/` の仕様に受入基準・制約・ドメイン影響が記載されているか。
 - ユースケース単位のモジュール性: 対象ユースケースが独立実装・独立デプロイ可能な粒度か。
 - テストファースト検証: 必要なテスト種別（単体・契約・統合）が洗い出され、タスク化されているか。
 - ドキュメント同期と追跡性: 本計画と仕様・タスク間のリンクが存在し、更新フローが明示されているか。
 - ドメインモデル開発手順: ドメイン→インメモリリポジトリ→ユースケース→アダプタ→統合テストの順序が維持されているか。
-- クリーンアーキテクチャ構造: 層ごとの責務と依存方向（`interfaces → application → domain`）が守られ、横断的関心事はインフラストラクチャ層に限定されているか。
-- CQRS/Event Sourcing: コマンド・クエリ分離、イベントストア構成、`@j5ik2o/event-store-adapter-js` の利用計画が定義されているか。
-- エラーハンドリング戦略: 回復可能性に基づき戻り値型（Either/Result 等）と例外使用境界が定義されているか。
+- クリーンアーキテクチャ構造: 層ごとの責務と依存方向（`interfaces → processor → domain`）が守られ、横断的関心事はインフラストラクチャ層に限定されているか。
+- CQRS/Event Sourcing: コマンド・クエリ分離、イベントストア構成、`j5ik2o/event-store-adapter-rs` の利用計画が定義されているか。
+- エラーハンドリング戦略: 回復可能性に基づき戻り値型（Result 等）と例外使用境界が定義されているか。
 - クラウド基盤とローカル検証: AWS で運用するサービス（GraphQL API、イベントストア、Kinesis 等）と LocalStack/docker compose による検証手順が明記されているか。
 - プレゼンテーションと BFF: GraphQL サーバにドメインロジックを集約し、Next.js API Routes が BFF、Next.js が純粋なプレゼンテーションになる設計が成立しているか。
 - 永続化ストアとリードモデル: DynamoDB をコマンド側に、MySQL をリードモデルに用い、Read Model Updater を AWS Lambda で実装する計画が定義されているか。
-- パッケージ構成と依存制御: `references/cqrs-es-example-js/packages` に基づくパッケージ分割と依存ルールが定義され、逆依存がビルドエラーになる仕組みを整備しているか。
+- パッケージ構成と依存制御: `references/cqrs-es-example-rs/modules` に基づくパッケージ分割と依存ルールが定義され、逆依存がビルドエラーになる仕組みを整備しているか。
 - GraphQL アクセス方針: ブラウザ側は API Routes 経由、RSC は共有トークンモジュール経由で GraphQL に直接アクセスする設計が明文化されているか。
 
 ## プロジェクト構成
@@ -78,7 +78,7 @@ tests/
 └── integration/  # サブプロジェクト統合テスト
 ```
 
-**構成方針**: [このフィーチャで利用するパッケージ構成と `references/cqrs-es-example-js/packages` との差分を説明する]
+**構成方針**: [このフィーチャで利用するパッケージ構成と `references/cqrs-es-example-rs/modules` との差分を説明する]
 
 ## ドメインモデル開発計画
 
@@ -93,8 +93,8 @@ tests/
 
 ## エラーハンドリング計画
 
-- **回復可能エラー**: [Either/Result 等で返却するエラー種別、ユースケースでの対処方法（リトライ・代替フロー・通知）]
-- **回復不能エラー**: [例外/ panic を使用する箇所と根拠、ログ・監視の方法]
+- **回復可能エラー**: [Result 等で返却するエラー種別、ユースケースでの対処方法（リトライ・代替フロー・通知）]
+- **回復不能エラー**: [panic を使用する箇所と根拠、ログ・監視の方法]
 - **例外変換方針**: [インフラ層で捕捉しドメイン向け型へ変換するルール]
 - **命名規則**: [エラー型の命名および責務]
 
@@ -103,7 +103,7 @@ tests/
 - **コマンドモデル**: [ハンドラ、集約、コマンド名、整合性制約、ユースケースとの関連。コマンドは集約が公開するメソッドとして実装し（例: `group-chat.ts`）、独立したコマンドクラスを作成しないこと。イベント保存が主目的である一方、リプレイや他集約確認など必要な読み込みの範囲を明記し、発生させるドメインイベントは専用ファイル（例: `group-chat-events.ts`）で定義すること]
 - **クエリモデル**: [リードモデル、投影更新方式、最終的整合性の扱い。ドメインモデル・リポジトリを使用せずリードデータベースへ直接アクセスする設計]
 - **イベントスキーマ**: [イベント名、ペイロード、バージョニング/アップキャスト方針]
-- **イベントストア構成**: [`@j5ik2o/event-store-adapter-js` の接続設定、ストリーム命名規約、スナップショット]
+- **イベントストア構成**: [`j5ik2o/event-store-adapter-rs` の接続設定、ストリーム命名規約、スナップショット]
 - **イベントバス**: [AWS Kinesis Data Streams のストリーム設計、パーティションキー、サブスクリプション/GraphQL 連携、LocalStack での代替設定]
 - **運用・テスト**: [イベントリプレイ、障害時の復旧手順、負荷試験計画]
 
@@ -119,25 +119,25 @@ tests/
 ## 永続化と投影設計
 
 - **コマンド永続化**: [DynamoDB テーブル設計、パーティション/ソートキー、RCU/WCU、TTL、セキュリティ]
-- **イベントストア**: [DynamoDB + `@j5ik2o/event-store-adapter-js` の利用方法、スナップショットテーブル、ストリーム設定]
+- **イベントストア**: [DynamoDB + `j5ik2o/event-store-adapter-rs` の利用方法、スナップショットテーブル、ストリーム設定]
 - **リードモデル**: [MySQL スキーマ設計、インデックス、マイグレーション手順、接続プール]
 - **Read Model Updater**: [AWS Lambda 実装方針、デプロイパイプライン、Kinesis トリガ、リトライ/デッドレター設定]
 - **ローカル/CI**: [LocalStack + MySQL コンテナの起動手順、Lambda 実行の代替（ローカル Node.js/ AWS SAM など）、テストデータのシーディング]
 - **監視/運用**: [DynamoDB/ MySQL/ Lambda のメトリクス、アラート設定、コスト管理]
-- **テーブルフォーマット**: [`references/cqrs-es-example-js/tools/dynamodb-setup/create-tables.sh` を参照し、ジャーナル/スナップショットテーブルの形式と差分を記載する]
+- **テーブルフォーマット**: [`references/cqrs-es-example-rs/tools/dynamodb-setup/create-tables.sh` を参照し、ジャーナル/スナップショットテーブルの形式と差分を記載する]
 
 ## リポジトリ構成と依存制御
 
-- **ワークスペース管理**: [pnpm の workspace 設定、`packages/` 配置、turbo 等のビルドスクリプト]
-- **パッケージ構造**: [`references/cqrs-es-example-js/packages` に基づく各層のサブプロジェクト一覧と対応関係（domain/application/interface/infrastructure/rmu 等）]
-- **依存ルール**: [層の依存方向、`package.json` の依存宣言、TypeScript プロジェクトリファレンス、ESLint/biome ルールでの検証方法]
+- **ワークスペース管理**: [Cargo.toml の workspace 設定、`modules/` 配置、turbo 等のビルドスクリプト]
+- **パッケージ構造**: [`references/cqrs-es-example-rs/modules` に基づく各層のサブプロジェクト一覧と対応関係（domain/processor/interface/infrastructure/rmu 等）]
+- **依存ルール**: [層の依存方向、`Cargo.toml` の依存宣言、TypeScript プロジェクトリファレンス、ESLint/biome ルールでの検証方法]
 - **ビルドガード**: [turbo や自動テストで逆依存を検出する仕組み、CI でのチェック手順]
 - **ドキュメント化**: [README/plan/spec へ反映するガイドライン、差異発生時の記録方法]
 
 ## リファレンス資産の活用
 
-- **イベントストア実装**: `references/event-store-adapter-js` のどのモジュール・設定を参照するかを記述し、コードコピーを行わず設計意図のみ取り込むことを明示。
-- **CQRS サンプル**: `references/cqrs-es-example-js` のコマンド/クエリ/投影の参照箇所と、本計画との違い・対応策を明示（参照のみでありコピー禁止）。
+- **イベントストア実装**: `references/event-store-adapter-rs` のどのモジュール・設定を参照するかを記述し、コードコピーを行わず設計意図のみ取り込むことを明示。
+- **CQRS サンプル**: `references/cqrs-es-example-rs` のコマンド/クエリ/投影の参照箇所と、本計画との違い・対応策を明示（参照のみでありコピー禁止）。
 - **ライセンス対応**: 取り込むコードのライセンス表記方法と改変内容の記録方法。
 - **レビュー観点**: リファレンスとの差異をレビューで検証するチェック項目。
 

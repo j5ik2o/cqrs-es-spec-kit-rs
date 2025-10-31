@@ -20,8 +20,8 @@ description: "フィーチャ実装のためのタスクテンプレート"
 
 ## パス規約
 
-- **標準構成**: `packages/command/domain/src`, `packages/command/processor/src`, `packages/command/interface-adaptor-impl/src`, `packages/query/interface-adaptor/src`, `packages/rmu/src`
-- **ワークスペース**: ルートの `packages/` 配下にサブプロジェクトを配置し、`references/cqrs-es-example-js/packages` の階層と整合させる（pnpm + turbo で登録）。
+- **標準構成**: `modules/command/domain/src`, `modules/command/processor/src`, `modules/command/interface-adaptor-impl/src`, `modules/query/interface-adaptor/src`, `modules/rmu/src`
+- **ワークスペース**: ルートの `modules/` 配下にサブプロジェクトを配置し、`references/cqrs-es-example-rs/modules` の階層と整合させる。
 - **テスト**: 共通の `tests/` ディレクトリまたは各パッケージ直下の `__tests__` を活用し、ユニット/契約/統合テストをレイヤーごとに配置する。
 - plan.md の構成方針と矛盾しないよう必要に応じて修正する。
 
@@ -59,18 +59,18 @@ description: "フィーチャ実装のためのタスクテンプレート"
 - [ ] T008 環境変数管理・設定読み込みの仕組みを整え、AWS 向け設定と LocalStack/docker compose の切り替えを用意する
 - [ ] T009 インメモリリポジトリを `packages/command/interface-adaptor-impl/src/repository/in-memory` に実装し、ユースケーステストから利用できるようにする
 - [ ] T010 インフラストラクチャ共通ユーティリティ（ロギング・設定・ID 生成など）を `infrastructure/` 以下に整備する（IO を含めない）
-- [ ] T011 [P] `@j5ik2o/event-store-adapter-js` の接続設定を `infrastructure/` に実装し、AWS 上の本番構成と LocalStack 用 docker compose 設定を整備する
+- [ ] T011 [P] `j5ik2o/event-store-adapter-rs` の接続設定を `infrastructure/` に実装し、AWS 上の本番構成と LocalStack 用 docker compose 設定を整備する
 - [ ] T012 イベント投影/サブスクライバの基盤（Kinesis を用いたイベントバス・リードモデル更新）を用意し、LocalStack での再生テストを含めユニットテストで再生可能にする
 - [ ] T013 エラーハンドリング方針をドキュメントに反映し、回復可能/不能の分類と戻り値型・例外境界を明記する
-- [ ] T014 `references/event-store-adapter-js` と `references/cqrs-es-example-js` をレビューし、設計意図のみ参照して差分を記録（コードのコピーや改変取り込みは禁止）。CQRS のクエリ側がドメインモデル・リポジトリへ依存せずリードデータベースへ直接アクセスする設計になっているか確認する
+- [ ] T014 `references/event-store-adapter-rs` と `references/cqrs-es-example-rs` をレビューし、設計意図のみ参照して差分を記録（コードのコピーや改変取り込みは禁止）。CQRS のクエリ側がドメインモデル・リポジトリへ依存せずリードデータベースへ直接アクセスする設計になっているか確認する
 - [ ] T015 GraphQL サーバのベース（スキーマ、サーバ起動、ドメイン層との結線）を `backend/graphql/` 等に構築し、Mutation/Query/Subscription をユースケースにバインドする
 - [ ] T016 Next.js API Routes に BFF 基盤を用意し、GraphQL クライアント構成・セッション/トークン管理・監査ログフックを実装する
 - [ ] T017 Next.js プレゼンテーション層の土台（レイアウト、データ取得フック、GraphQL クライアント生成）を準備し、BFF 経由でデータ取得できることを確認する
 - [ ] T018 DynamoDB（コマンド側）用のテーブル構成・Terraform/CDK 定義を作成し、LocalStack で動作確認する
 - [ ] T019 MySQL リードモデル用のスキーマとマイグレーション基盤を整備し、docker compose で起動する
 - [ ] T020 Read Model Updater を AWS Lambda として雛形実装し、Kinesis トリガ/ローカル実行（SAM 等）の手順を用意する
-- [ ] T021 DynamoDB のジャーナル/スナップショットテーブル形式を `references/cqrs-es-example-js/tools/dynamodb-setup/create-tables.sh` と照合し、差分がある場合は仕様・計画・タスクへ記録する
-- [ ] T022 pnpm のワークスペース設定を構築し、`packages/` 配下を `references/cqrs-es-example-js/packages` に倣った構造で作成する
+- [ ] T021 DynamoDB のジャーナル/スナップショットテーブル形式を `references/cqrs-es-example-rs/tools/dynamodb-setup/create-tables.sh` と照合し、差分がある場合は仕様・計画・タスクへ記録する
+- [ ] T022 pnpm のワークスペース設定を構築し、`packages/` 配下を `references/cqrs-es-example-rs/packages` に倣った構造で作成する
 - [ ] T023 TypeScript プロジェクトリファレンス・ESLint/biome ルール・ビルドタスクで層の逆依存が発生すると失敗する仕組みを導入する
 - [ ] T024 GraphQL アクセス用の共通トークン管理・クライアントモジュールを `packages/application` 等に定義し、API Routes/RSC から再利用できるようにする
 - [ ] T025 BFF(API Routes) と RSC の双方で共通モジュールを利用する統合テストを追加し、直接トークンを扱う実装が存在しないことを確認する
@@ -96,7 +96,7 @@ description: "フィーチャ実装のためのタスクテンプレート"
 ### 実装
 
 - [ ] T029 [P] [US1] ドメインモデルを `packages/command/domain/src/...` に追加する（集約メソッドをコマンドとして実装し、独立したコマンドクラスを作成しない）
-- [ ] T030 [P] [US1] ユースケースサービスを `packages/command/processor/src/...` に実装する（Either/Result によるエラー制御を含む）
+- [ ] T030 [P] [US1] ユースケースサービスを `packages/command/processor/src/...` に実装する（Result によるエラー制御を含む）
 - [ ] T031 [US1] アダプタを `packages/command/interface-adaptor-impl/src/...` に実装し、ポートを満たす（例外をドメイン向けエラーに変換し、RPC/DB/イベントストア連携など Gateway 責務を担う）
 - [ ] T032 [US1] バリデーション・エラーハンドリングを組み込む（回復不能エラーはフェイルファスト）
 - [ ] T033 [US1] 観測性（ログ・メトリクス）を追加する
