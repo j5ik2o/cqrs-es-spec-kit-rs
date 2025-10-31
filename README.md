@@ -1,0 +1,1 @@
+# CQRS/ES Spec Kit for Rust 
