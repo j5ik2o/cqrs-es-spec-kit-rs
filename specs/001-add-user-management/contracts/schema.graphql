@@ -1,0 +1,178 @@
+"""
+GraphQL schema for the initial user management capability.
+The BFF (Next.js API Routes) is the only direct consumer of this API.
+"""
+
+scalar Email
+scalar DateTime
+scalar Locale
+scalar TimeZone
+scalar JSON
+
+enum AccountStatusState {
+  PENDING
+  VERIFIED
+  LOCKED
+}
+
+enum NotificationPreference {
+  EMAIL_ON
+  EMAIL_OFF
+}
+
+enum SignOutStatus {
+  SUCCESS
+}
+
+type Query {
+  viewer: Viewer
+  accountStatus: AccountStatus!
+}
+
+type Mutation {
+  signUp(input: SignUpInput!): SignUpPayload!
+  verifyEmail(input: VerifyEmailInput!): VerifyEmailPayload!
+  resendVerificationEmail(input: ResendVerificationEmailInput!): ResendVerificationEmailPayload!
+  signIn(input: SignInInput!): SignInPayload!
+  signOut: SignOutPayload!
+  updateProfile(input: UpdateProfileInput!): UpdateProfilePayload!
+  updateSettings(input: UpdateSettingsInput!): UpdateSettingsPayload!
+  requestAvatarUpload(input: RequestAvatarUploadInput!): RequestAvatarUploadPayload!
+}
+
+type Viewer {
+  account: User!
+  recentNotifications(limit: Int = 10): [Notification!]!
+}
+
+type User {
+  id: ID!
+  email: Email!
+  status: AccountStatusState!
+  profile: Profile!
+  settings: UserSettings!
+  lastLoginAt: DateTime
+  pendingVerification: Boolean!
+}
+
+type Profile {
+  displayName: String!
+  bio: String
+  avatarUrl: String
+  avatarUpdatedAt: DateTime
+}
+
+type UserSettings {
+  notificationPreference: NotificationPreference!
+  locale: Locale!
+  timeZone: TimeZone!
+  updatedAt: DateTime!
+}
+
+type Notification {
+  id: ID!
+  type: NotificationType!
+  title: String!
+  message: String!
+  deliveredAt: DateTime!
+  readAt: DateTime
+}
+
+enum NotificationType {
+  SIGNUP_CONFIRMATION
+  SIGNUP_REMINDER
+  PROFILE_UPDATED
+}
+
+type AccountStatus {
+  state: AccountStatusState!
+  email: Email!
+  pendingTokenExpiresAt: DateTime
+  resendCount: Int!
+}
+
+input SignUpInput {
+  email: Email!
+  password: String!
+  displayName: String!
+  locale: Locale!
+  timeZone: TimeZone!
+}
+
+type SignUpPayload {
+  accountId: ID!
+  pendingVerification: Boolean!
+  verificationExpiresAt: DateTime!
+}
+
+input VerifyEmailInput {
+  token: String!
+}
+
+type VerifyEmailPayload {
+  accountId: ID!
+  state: AccountStatusState!
+}
+
+input ResendVerificationEmailInput {
+  email: Email!
+}
+
+type ResendVerificationEmailPayload {
+  delivered: Boolean!
+  nextAvailableAt: DateTime!
+  resendCount: Int!
+}
+
+input SignInInput {
+  email: Email!
+  password: String!
+  deviceLabel: String
+}
+
+type SignInPayload {
+  session: Session!
+  account: User!
+}
+
+type Session {
+  sessionId: ID!
+  expiresAt: DateTime!
+  issuedAt: DateTime!
+}
+
+type SignOutPayload {
+  status: SignOutStatus!
+}
+
+input UpdateProfileInput {
+  displayName: String!
+  bio: String
+  avatarUploadToken: String
+}
+
+type UpdateProfilePayload {
+  profile: Profile!
+}
+
+input UpdateSettingsInput {
+  notificationPreference: NotificationPreference!
+  locale: Locale!
+  timeZone: TimeZone!
+}
+
+type UpdateSettingsPayload {
+  settings: UserSettings!
+}
+
+input RequestAvatarUploadInput {
+  fileName: String!
+  contentType: String!
+  fileSize: Int!
+}
+
+type RequestAvatarUploadPayload {
+  uploadUrl: String!
+  objectKey: String!
+  expiresAt: DateTime!
+}
