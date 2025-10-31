@@ -4,7 +4,7 @@
 
 | 属性 | 型 | 概要 | バリデーション/制約 |
 |------|----|------|---------------------|
-| `id` | ULID | 集約識別子 | 生成時に一意。Kinesis パーティションキーとしても利用する。 |
+| `id` | UserAccountId | 集約識別子 | 内部に非公開フィールド `value: ULID` を保持。`to_ulid()` / `to_string()` を提供し、やむを得ず内部値が必要な場合のみ `breach_encapsulation_of_value()` でアクセスさせる。生成時に一意で、Kinesis パーティションキーにも利用。 |
 | `email` | EmailAddress | ログイン ID | RFC 5322 準拠、大文字小文字正規化、一意制約。 |
 | `password` | PasswordCredential | ハッシュ化されたパスワード | PBKDF2/Bcrypt/Scrypt のいずれかを採用（既定: Argon2id）。12 文字以上の強度検証を通過したもののみ保持。 |
 | `profile` | Profile | 表示名・自己紹介・アバター情報 | 表示名 2〜50 文字、自己紹介最大 400 文字、アバターは S3 オブジェクトキー参照。 |
@@ -24,6 +24,11 @@
 - 書式: RFC 5322 を `validator` crate を用いて検証。
 - 保存時は小文字に正規化し、トリム後に再検証。
 - ドメイン制限: allowlist/denylist を設定可能（MVP は制限なし、設定ファイルで拡張）。
+
+### UserAccountId
+- `value: ULID` を非公開で保持し、`to_ulid()` と `to_string()` のみ公開する。
+- インフラ層でどうしても内部値が必要な場合に備え、誤用を抑止する意図で `breach_encapsulation_of_value()` を用意するが、利用時はレビューで必ず妥当性を確認する。
+- serde 経由でのシリアライズ/デシリアライズは ULID 文字列として行う。
 
 ### PasswordCredential
 - 構成: `hash`, `algorithm`, `salt`, `hashed_at`。
