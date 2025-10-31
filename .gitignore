@@ -1,0 +1,7 @@
+/target
+/.claude/settings.local.json
+/.codex/auth.json
+/.codex/version.json
+/.codex/log/
+/.codex/sessions/
+/.codex/history.jsonl
