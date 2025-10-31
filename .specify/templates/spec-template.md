@@ -1,115 +1,179 @@
-# Feature Specification: [FEATURE NAME]
+# フィーチャ仕様: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft  
-**Input**: User description: "$ARGUMENTS"
+**フィーチャブランチ**: `[###-feature-name]`  
+**作成日**: [DATE]  
+**ステータス**: ドラフト  
+**入力**: ユーザー要求: "$ARGUMENTS"
 
-## User Scenarios & Testing *(mandatory)*
+## ユーザージャーニーとテスト（必須）
 
-<!--
-  IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
-  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
-  you should still have a viable MVP (Minimum Viable Product) that delivers value.
-  
-  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
-  Think of each story as a standalone slice of functionality that can be:
-  - Developed independently
-  - Tested independently
-  - Deployed independently
-  - Demonstrated to users independently
--->
+> 優先度順（P1, P2, P3, ...）に並べた独立可能なユーザージャーニーを定義する。  
+> 各ジャーニーは単独で価値を提供し、実装・テスト・デプロイ・デモが可能でなければならない。
 
-### User Story 1 - [Brief Title] (Priority: P1)
+### ユーザーストーリー 1 - [短いタイトル]（優先度: P1）
 
-[Describe this user journey in plain language]
+[ユーザー視点での体験を平易な日本語で記述する]
 
-**Why this priority**: [Explain the value and why it has this priority level]
+**優先理由**: [なぜ P1 なのか、ビジネス価値やリスク低減を明記する]
 
-**Independent Test**: [Describe how this can be tested independently - e.g., "Can be fully tested by [specific action] and delivers [specific value]"]
+**独立テスト**: [単独で検証する方法。例: 「[具体的アクション] を実行すると [期待値] が得られることを自動テストで確認できる」]
 
-**Acceptance Scenarios**:
+**受入シナリオ**:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-2. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. **前提** [初期状態]、**操作** [行動]、**結果** [期待される状態]
+2. **前提** [初期状態]、**操作** [行動]、**結果** [期待される状態]
 
 ---
 
-### User Story 2 - [Brief Title] (Priority: P2)
+### ユーザーストーリー 2 - [短いタイトル]（優先度: P2）
 
-[Describe this user journey in plain language]
+[ユーザー視点での体験を平易な日本語で記述する]
 
-**Why this priority**: [Explain the value and why it has this priority level]
+**優先理由**: [優先度の根拠]
 
-**Independent Test**: [Describe how this can be tested independently]
+**独立テスト**: [単独テスト方法]
 
-**Acceptance Scenarios**:
+**受入シナリオ**:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-
----
-
-### User Story 3 - [Brief Title] (Priority: P3)
-
-[Describe this user journey in plain language]
-
-**Why this priority**: [Explain the value and why it has this priority level]
-
-**Independent Test**: [Describe how this can be tested independently]
-
-**Acceptance Scenarios**:
-
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+1. **前提** [初期状態]、**操作** [行動]、**結果** [期待される状態]
 
 ---
 
-[Add more user stories as needed, each with an assigned priority]
+### ユーザーストーリー 3 - [短いタイトル]（優先度: P3）
 
-### Edge Cases
+[ユーザー視点での体験を平易な日本語で記述する]
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
--->
+**優先理由**: [優先度の根拠]
 
-- What happens when [boundary condition]?
-- How does system handle [error scenario]?
+**独立テスト**: [単独テスト方法]
 
-## Requirements *(mandatory)*
+**受入シナリオ**:
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
--->
+1. **前提** [初期状態]、**操作** [行動]、**結果** [期待される状態]
 
-### Functional Requirements
+---
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
+[必要に応じてユーザーストーリーを追加する。各ストーリーに優先度を設定すること。]
 
-*Example of marking unclear requirements:*
+### エッジケース
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- [境界条件] のときどうなるか
+- [エラーシナリオ] をどのように扱うか
+- ドメイン不変条件や制約違反をどの層で検知するか
 
-### Key Entities *(include if feature involves data)*
+## 要件（必須）
 
-- **[Entity 1]**: [What it represents, key attributes without implementation]
-- **[Entity 2]**: [What it represents, relationships to other entities]
+### 機能要件
 
-## Success Criteria *(mandatory)*
+- **FR-001**: システムは [具体的機能。例: 「ユーザーがアカウントを作成できる」] こと。
+- **FR-002**: システムは [具体的機能。例: 「入力されたメールアドレスを検証する」] こと。  
+- **FR-003**: ユーザーは [主要操作。例: 「パスワードを再設定できる」] こと。
+- **FR-004**: システムは [データ要件。例: 「ユーザープロファイルを永続化する」] こと。
+- **FR-005**: システムは [振る舞い。例: 「重要イベントを監査ログに記録する」] こと。
 
-<!--
-  ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
--->
+*不明点を明示する例:*
 
-### Measurable Outcomes
+- **FR-006**: システムはユーザーを [要確認: 認証方式未決定（メール/パスワード、SSO、OAuth など）] で認証する。
+- **FR-007**: システムはデータを [要確認: 保持期間未設定] 保持する。
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+### ドメインエンティティと値オブジェクト
+
+- **値オブジェクト**: [識別子を持たず不変であること、検証ロジック、許容される値域。Primitive Obsession を避けるため、金額・数量などのドメイン値は必ず値オブジェクトとして定義する]
+- **エンティティ / 集約ルート**: [識別子、トランザクション境界、不変条件、子要素との関係、公開するドメイン振る舞い（射）]
+- **ドメインサービス（必要時）**: [複数集約にまたがるルールと副作用の扱い]
+- ドメインサービスはエンティティ・値オブジェクトのみを扱う純粋関数とし、リポジトリなどの永続化責務を利用しないことを明記する。
+- バリデータは値オブジェクトのコンストラクタ（または生成ファクトリ）経由で検証し、成功時は値オブジェクトを、失敗時はエラーを返す方針を記載する。
+- ドメイン層の不変条件・生成条件・ライフサイクルを明記し、ユビキタス言語を使用する。
+- 不正引数・不正状態・到達不能といった回復不能エラーは、どの例外型で検出し、どの層でフェイルファストするかを記録する。
+- **ドメインイベント**: [`references/cqrs-es-example-js/packages/command/domain/src/*/*-events.ts` に倣い、イベント型を別ファイルで定義し、バージョンやシリアライズ形式を明記する]
+
+### アプリケーションサービスとポート
+
+- **[ユースケースサービス名]**: [トリガーとなるユースケースと入出力]
+- **入力ポート / 出力ポート**: [依存するインターフェイスと契約]
+- 既存ユースケースとの依存や排他制御がある場合は明示する。
+- **CQRS の方針**: [コマンド/クエリの分離、命名規約、依存方向]
+- 回復可能なアプリケーションエラーを `Either` / `Result` 等で返却する設計を明示し、ユースケース単位でエラー型を定義する。
+
+### コマンド & クエリモデル
+
+- **コマンド一覧**: [集約の公開メソッドとして実装するコマンドを列挙し（例: `group-chat.ts`）、入力、期待するイベント、検証ルールを記載する。独立したコマンドクラスを作成してはならない。イベント保存が主目的である一方、リプレイや他集約確認など必要な読み込みの範囲も明記]
+- **クエリ一覧**: [クエリ名、入力、返却するリードモデル、整合性要件]
+- **読取/書込分離**: [最終的整合性、レイテンシ、リトライ/補償フロー]
+- **クエリ実装方針**: [ドメインモデルやドメインリポジトリを利用せず、リードデータベースへ直接アクセスすることを明記]
+
+### イベント設計
+
+- **イベントスキーマ**: [イベント名、ペイロード、バージョン、アップキャスト方針]
+- **イベント順序**: [ストリーム名、順序保証、集約単位のルール]
+- **プロジェクション**: [リードモデル更新方法、投影サービス、エラーハンドリング]
+
+### イベントストア構成
+
+- **ライブラリ設定**: [`@j5ik2o/event-store-adapter-js` の接続情報、使用するストレージバックエンド]
+- **スナップショット/リプレイ**: [スナップショット戦略、イベント再生手順、障害復旧手順]
+- **監視**: [イベント保存失敗・ストリーム競合の検出と通知方法]
+- **参考実装**: [`references/event-store-adapter-js` の参照ファイル/設定を列挙し、差分と理由を記載（コードコピー不可、設計意図のみ反映）]
+
+### クラウド運用とローカル検証
+
+- **AWS サービス**: [本番/ステージング/QA で利用する AWS リソース（例: Lambda, ECS/EKS, DynamoDB, Secrets Manager, Kinesis）を列挙し、依存関係を説明する]
+- **イベントバス**: [AWS Kinesis Data Streams のストリーム構成、シャード設計、GraphQL サブスクリプションや通知フローとの連携方法を記述する]
+- **IaC**: [AWS CDK / CloudFormation / Terraform 等で管理するスタックを列挙し、デプロイ手順とバージョン管理方法を明記する]
+- **ローカル検証**: [docker compose + LocalStack で再現するサービス、起動コマンド、テストフローを定義し、AWS 環境との差分を記録する]
+- **CI**: [LocalStack を用いた自動テストの実行手順、必要なシードデータ、GraphQL サブスクリプションの検証方法を記載する]
+
+### プレゼンテーションと BFF
+
+- **GraphQL サーバ**: [Mutation/Query/Subscription とユースケースの対応、ドメインモデル配置、イベント処理、外部サービス呼び出しの境界]
+- **BFF (Next.js API Routes)**: [GraphQL クライアント実装、入力検証、セッション/トークン管理、レスポンス変換]
+- **Next.js UI**: [画面構成、データ取得方法（SWR/TanStack Query など）、SSR/ISR/CSR の戦略、リアルタイム更新の受信方法]
+- **通信フロー**: [UI → BFF → GraphQL サーバのリクエスト/レスポンスとエラー伝播、サブスクリプションの購読方法]
+- **観測性**: [GraphQL/BFF/UI それぞれのログ・トレース・メトリクス取得方法]
+- **制約**: [UI が直接 GraphQL/DB/イベントバスへアクセスしないこと、BFF が安定した契約を提供する理由]
+- **アクセス制御**: [ブラウザ側コンポーネントは API Routes 経由、RSC は共有トークン管理モジュールを通じて GraphQL に直接アクセスする設計、共通クライアント/エラーハンドリングの再利用方法]
+
+### 永続化と投影
+
+- **DynamoDB（コマンド側）**: [テーブル名、パーティション/ソートキー、RCU/WCU、TTL、ストリーム設定、セキュリティポリシー]
+- **イベントストア設定**: [DynamoDB と `@j5ik2o/event-store-adapter-js` の連携、スナップショットとイベントストリームの扱い]
+- **MySQL リードモデル**: [スキーマ、インデックス、マイグレーション戦略、接続プールとフェイルオーバー]
+- **Read Model Updater (AWS Lambda)**: [関数構造、デプロイ方法、Kinesis トリガ、リトライ・DLQ、監視/アラート]
+- **ローカル/CI 構成**: [LocalStack での DynamoDB、docker compose の MySQL、Lambda のローカル実行手順、テストデータ準備]
+- **参考リポジトリ**: [`references/cqrs-es-example-js` の該当箇所と本仕様の差分/適用箇所]
+- **テーブルフォーマット**: [`references/cqrs-es-example-js/tools/dynamodb-setup/create-tables.sh` に基づくジャーナル/スナップショットテーブル形式、導入する差異と移行手順]
+
+### リポジトリ構成と依存制御
+
+- **ワークスペース設定**: [pnpm workspace の設定ファイル、`packages/*` のパターン、turbo のタスク構成]
+- **パッケージ一覧**: [`references/cqrs-es-example-js/packages` をもとに、本仕様で追加/調整するサブプロジェクト一覧とクリーンアーキテクチャ層との対応]
+- **依存方向**: [各パッケージの `dependencies`/`devDependencies` ポリシー、許可される依存方向、禁止例、静的チェック方法]
+- **検証方法**: [TypeScript プロジェクトリファレンス、ESLint/biome ルール、ビルドタスクでの検出方法、CI での実行位置]
+- **差分管理**: [参考リポジトリと異なる構成の理由と、その影響（ビルド、デプロイ、テスト）]
+
+### リポジトリとアダプタ
+
+- **リポジトリインターフェイス**: [必要な操作、整合性ルール、戻り値]
+- **インメモリ実装方針**: [テストで扱うデータセット、シミュレートする制約]
+- **永続化 / API アダプタ**: [接続先、エラー処理、DTO とドメイン間のマッピング]
+- **依存方向の証跡**: [インターフェースアダプタがユースケースを介してドメインに依存し、逆依存がないことを説明]
+- **例外変換**: [インフラ層で発生した例外をどの型へ変換するか、境界で握り潰さないことの確認]
+- **インフラストラクチャ**: [提供する共通ユーティリティのみ記述し、RPC やデータベースアクセスをここに実装しない方針を明記]
+- **リファレンス**: [`references/cqrs-es-example-js` の利用箇所（コマンド、クエリ、投影など）と、本仕様との差分・適用理由。参照のみでコードコピーは行わないことを明示]
+
+### 開発順序上の前提
+
+- ドメインテスト → モデル実装 → リファクタリング → インメモリリポジトリ → ユースケース → アダプタ → 統合テストの順序で進める根拠を記載する。
+- レイヤー構造が崩れるリスクと回避策を明記し、インフラストラクチャ層を横断的関心事のみに限定する。
+- エラーの回復可能性やエラー型命名ルールを記述し、仕様内で想定する代替フローと通知方法を定義する。
+
+## 成功指標（必須）
+
+> 技術依存しない測定可能なゴールを定義する。
+
+### 測定可能な成果
+
+- **SC-001**: [測定可能な指標。例: 「ユーザーが主要フローを 2 分以内に完了できる」]
+- **SC-002**: [性能指標。例: 「システムが同時 100 リクエストを処理しても p95 が 200ms 未満」]
+- **SC-003**: [顧客満足。例: 「ユーザーの 90% が初回試行で目的を達成する」]
+- **SC-004**: [ビジネス指標。例: 「対象カテゴリの問い合わせ件数を 50% 削減する」]
