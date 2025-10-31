@@ -58,7 +58,7 @@ Follow-up TODOs:
 理由: ドキュメントとコードを同期させることでドメイン知識の属人化と再作業を抑制する。
 
 ## 追加技術制約
-- MUST リポジトリは `references/cqrs-es-example-rs/modules` 配下にクリーンアーキテクチャの層ごと（例: `modules/command/domain`, `modules/command/processor`, `modules/command/interface-adaptor-impl`, `modules/rmu`）のサブプロジェクトを配置し、各パッケージは外向き依存のみ許可する。`references/cqrs-es-example-js/packages` のレイアウトから逸脱する場合は仕様で理由と影響範囲を明記する。
+- MUST リポジトリは `references/cqrs-es-example-rs/modules` 配下にクリーンアーキテクチャの層ごと（例: `modules/command/domain`, `modules/command/processor`, `modules/command/interface-adaptor-impl`, `modules/rmu`）のサブプロジェクトを配置し、各パッケージは外向き依存のみ許可する。`references/cqrs-es-example-rs/modules` のレイアウトから逸脱する場合は仕様で理由と影響範囲を明記する。
 - MUST インフラアクセスはユースケース層が定義するポートを介して実装し、アダプタはドメイン型を変換せずに受け渡す。
 - MUST 技術選定やバージョンアップを行う場合は仕様書に「技術制約」節を追加し、互換性検証手順を記録する。
 - SHOULD Rust Toolchain の LTS バージョンで運用し、変更時は互換性テストを実施する。
@@ -70,10 +70,10 @@ Follow-up TODOs:
 - MUST バリデータは値オブジェクトのコンストラクタを通じて検証し、生成に成功した場合は値オブジェクトを返し、失敗時はエラーを返却する。
 - MUST ドメインモデル（集約・値オブジェクト）はデータ保持のみを行う構造体ではなく、ユビキタス言語に基づく振る舞いを公開する。`references/cqrs-es-example-rs/modules/command/domain/src/group_chat.rs` のようにドメイン操作は集約メソッド（射）としてモデリングする。
 - MUST システム全体で CQRS と Event Sourcing を採用し、コマンドモデルとクエリモデルの責務分離を維持する。
-- MUST イベントストアには `event-store-adapter-rs` を利用し、イベント永続化・ストリーム管理・スナップショットをこのアダプタで実装する。
+- MUST イベントストアには `j5ik2o/event-store-adapter-rs` を利用し、イベント永続化・ストリーム管理・スナップショットをこのアダプタで実装する。
 - MUST コマンドは `references/cqrs-es-example-rs/modules/command/domain/src/group_chat.rs` に倣い、集約が公開するメソッドとして実装し、別個のコマンドクラスを作成しない。
 - MUST ドメインイベントは `references/cqrs-es-example-rs/modules/command/domain/src/group_chat/events.rs` の形式を踏襲し、集約ごとに専用ファイルでイベント型を定義・バージョン管理する。
-- MUST ドメインモデルとアプリケーションサービスは GraphQL サーバ（例: Apollo Server 等）に内包し、GraphQL の Mutation/Query/Subscription がユースケースと 1 対 1 で対応する。
+- MUST ドメインモデルとアプリケーションサービスは GraphQL サーバ（Rust）に内包し、GraphQL の Mutation/Query/Subscription がユースケースと 1 対 1 で対応する。
 - MUST プレゼンテーション層は Next.js で実装し、UI から GraphQL サーバへのアクセスは Next.js API Routes を介した BFF を経由させる。
 - MUST Next.js API Routes は GraphQL サーバのクライアントとなり、UI からの入力検証・セッション管理・レスポンス整形を担い、UI から直接 GraphQL サーバへアクセスさせない。
 - MUST GraphQL サーバはプレゼンテーション層の状態や Next.js 固有のロジックに依存せず、純粋にドメイン／ユースケースロジックのみを保持する。
@@ -109,7 +109,7 @@ Follow-up TODOs:
 
 ## パッケージ構成と依存制御
 - MUST サブプロジェクトのディレクトリレイアウトは `references/cqrs-es-example-rs/modules` を基準にし、クリーンアーキテクチャの各層（domain / processor(ユースケース層) / interface / infrastructure / rmu 等）を独立したパッケージとして管理する。
-- MUST ルートのワークスペース設定（pnpm workspaces）およびビルドツール（turbo 等）を用いて、各パッケージの依存方向を「外側 → 内側」の一方向に限定し、逆方向依存が宣言された場合はビルドもしくは型チェックで失敗するように設定する。
+- MUST 各crateの依存方向を「外側 → 内側」の一方向に限定し、逆方向依存が宣言された場合はビルドもしくは型チェックで失敗するように設定する。
 - MUST Rust プロジェクトリファレンス・パスエイリアス・lint ルールを組み合わせ、`domain` が `processor(ユースケース層)` に依存する等の逆依存を静的解析で検出してエラー化する。
 - MUST crateとしてのレイヤー間の依存ルールは `references/cqrs-es-example-rs/modules/*` の `Cargo.toml` を参照して定義し、差異がある場合は仕様に理由とビルド/テストでの検証方法を明記する。
 - SHOULD 新規パッケージ追加時はクリーンアーキテクチャの層を跨がないか確認し、ワークスペース設定とビルドパイプラインに必ず登録する。
@@ -118,14 +118,14 @@ Follow-up TODOs:
 - コマンドハンドラは集約を操作し、成功時はイベントを生成してイベントストアへ永続化する。
 - クエリは読み取り専用の投影（リードモデル）を参照し、イベント購読により最新状態へ同期する。
 - イベントスキーマはバージョン管理し、アップキャスト・後方互換ポリシーを定義してドキュメント化する。
-- イベントストア接続やストリーム取り扱いは `@j5ik2o/event-store-adapter-js` の設定ファイルに集約し、環境差異をコードに散在させない。
+- イベントストア接続やストリーム取り扱いは `j5ik2o/event-store-adapter-rs` の設定ファイルに集約し、環境差異をコードに散在させない。
 - テストはコマンド→イベント→投影の流れを網羅し、イベント再生とリードモデル復元が可能であることを証明する。
 - クエリ側はドメインモデルやドメインリポジトリを利用せず、リードモデル用データベースへ直接アクセスして要求を満たす。
 - コマンド側はイベント保存が主目的だが、集約の再構築や他集約の状態確認のためのリプレイなど、最終的にいずれかの集約更新へ至る文脈に限り読み込みを許容する。
 
 ## リファレンス資産
-- `references/event-store-adapter-js`: 公式イベントストアアダプタ実装。設定、リプレイ、テスト戦略を参照し、アダプタ実装・設定が最新ガイドラインと一致していることを保証する。
-- `references/cqrs-es-example-js`: CQRS/Event Sourcing サンプル。コマンド/クエリ分離、投影設計、イベントハンドラの参考にし、差異がある場合は仕様・タスクに理由と対策を記録する。
+- `references/event-store-adapter-rs`: 公式イベントストアアダプタ実装。設定、リプレイ、テスト戦略を参照し、アダプタ実装・設定が最新ガイドラインと一致していることを保証する。
+- `references/cqrs-es-example-rs`: CQRS/Event Sourcing サンプル。コマンド/クエリ分離、投影設計、イベントハンドラの参考にし、差異がある場合は仕様・タスクに理由と対策を記録する。
 - リファレンスは理解のための参照専用とし、コードのコピーや改変を本リポジトリへ直接取り込むことを禁止する。必要に応じて自前で実装し、設計意図だけを反映する。
 - 仕様・計画・タスクには参照したリファレンスのパスを記載し、レビュアーが差分を追跡できるようにする。
 
