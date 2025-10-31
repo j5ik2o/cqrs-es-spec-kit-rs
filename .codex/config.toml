@@ -1,0 +1,15 @@
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+hide_agent_reasoning = true
+network_access = true
+
+[features]
+web_search_request = true
+
+[projects."/Users/j5ik2o/Sources/cqrs-es-spec-kit-rs"]
+trust_level = "trusted"
+
+[mcp_servers.serena]
+startup_timeout_sec = 10
+command = "uvx"
+args = ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "codex"]
