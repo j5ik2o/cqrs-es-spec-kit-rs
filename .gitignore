@@ -1,3 +1,4 @@
+.idea/
 /target
 /.claude/settings.local.json
 /.codex/auth.json
@@ -5,3 +6,4 @@
 /.codex/log/
 /.codex/sessions/
 /.codex/history.jsonl
+/Cargo.lock
