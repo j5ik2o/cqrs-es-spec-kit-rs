@@ -10,6 +10,6 @@ web_search_request = true
 trust_level = "trusted"
 
 [mcp_servers.serena]
-startup_timeout_sec = 10
+startup_timeout_sec = 30
 command = "uvx"
 args = ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "codex"]
