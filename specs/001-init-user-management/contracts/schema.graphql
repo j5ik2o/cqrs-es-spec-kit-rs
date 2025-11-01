@@ -1,0 +1,197 @@
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+"""自己情報参照など利用者向けの Query"""
+type Query {
+  viewer: Viewer!
+  adminUsers(filter: AdminUserFilterInput, pagination: CursorPaginationInput!): AdminUserConnection! @requiresRole(role: ADMIN)
+  adminUserAuditTrail(userId: ID!, pagination: CursorPaginationInput!): AccountStatusAuditLogConnection! @requiresRole(role: ADMIN)
+}
+
+"""利用者および管理者が発行する Mutation"""
+type Mutation {
+  signUpUser(input: SignUpUserInput!): SignUpUserPayload!
+  requestEmailVerification(input: RequestEmailVerificationInput!): RequestEmailVerificationPayload!
+  confirmUserEmail(input: ConfirmUserEmailInput!): ConfirmUserEmailPayload!
+  withdrawSelf(input: WithdrawSelfInput!): WithdrawSelfPayload! @requiresRole(role: USER)
+  updateUserStatus(input: UpdateUserStatusInput!): UpdateUserStatusPayload! @requiresRole(role: ADMIN)
+}
+
+"""状態更新を購読する Subscription"""
+type Subscription {
+  viewerStatusStream: UserStatusEvent! @requiresRole(role: USER)
+  adminUserStatusFeed(filter: AdminUserFeedFilterInput): UserStatusEvent! @requiresRole(role: ADMIN)
+}
+
+"""ログイン中利用者の自己情報"""
+type Viewer {
+  id: ID!
+  email: String!
+  displayName: String!
+  status: UserStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  emailVerifiedAt: DateTime
+}
+
+type AdminUserEdge {
+  cursor: String!
+  node: AdminUserSummary!
+}
+
+type AdminUserConnection {
+  edges: [AdminUserEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type AdminUserSummary {
+  id: ID!
+  email: String!
+  displayName: String!
+  status: UserStatus!
+  createdAt: DateTime!
+  lastUpdatedAt: DateTime!
+}
+
+type AccountStatusAuditLogEdge {
+  cursor: String!
+  node: AccountStatusAuditLog!
+}
+
+type AccountStatusAuditLogConnection {
+  edges: [AccountStatusAuditLogEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AccountStatusAuditLog {
+  id: ID!
+  userId: ID!
+  performedBy: ID
+  previousStatus: UserStatus!
+  newStatus: UserStatus!
+  reason: String!
+  changeSource: ChangeSource!
+  occurredAt: DateTime!
+  notificationId: ID
+}
+
+type UserStatusEvent {
+  userId: ID!
+  status: UserStatus!
+  occurredAt: DateTime!
+  source: ChangeSource!
+}
+
+type SignUpUserPayload {
+  userId: ID!
+  email: String!
+  requiresEmailVerification: Boolean!
+}
+
+type RequestEmailVerificationPayload {
+  accepted: Boolean!
+}
+
+type ConfirmUserEmailPayload {
+  userId: ID!
+  status: UserStatus!
+  confirmedAt: DateTime!
+}
+
+type WithdrawSelfPayload {
+  userId: ID!
+  deactivatedAt: DateTime!
+  notificationId: ID!
+}
+
+type UpdateUserStatusPayload {
+  userId: ID!
+  previousStatus: UserStatus!
+  newStatus: UserStatus!
+  auditLogId: ID!
+}
+
+input SignUpUserInput {
+  email: String!
+  displayName: String!
+  password: String!
+  acceptedTermsVersion: String!
+  locale: String
+}
+
+input RequestEmailVerificationInput {
+  email: String!
+}
+
+input ConfirmUserEmailInput {
+  email: String!
+  token: String!
+}
+
+input WithdrawSelfInput {
+  reason: String
+}
+
+input UpdateUserStatusInput {
+  userId: ID!
+  newStatus: AdminSettableStatus!
+  reason: String!
+}
+
+input AdminUserFilterInput {
+  status: [UserStatus!]
+  searchKeyword: String
+  createdFrom: DateTime
+  createdTo: DateTime
+}
+
+input AdminUserFeedFilterInput {
+  status: [UserStatus!]
+}
+
+input CursorPaginationInput {
+  first: Int
+  after: String
+  last: Int
+  before: String
+}
+
+"""ページ情報"""
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+enum UserStatus {
+  PENDING_EMAIL_VERIFICATION
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum AdminSettableStatus {
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+enum ChangeSource {
+  SELF_SERVICE
+  ADMIN_CONSOLE
+  SYSTEM
+}
+
+scalar DateTime
+
+directive @requiresRole(role: Role!) on FIELD_DEFINITION
+
+enum Role {
+  USER
+  ADMIN
+}
