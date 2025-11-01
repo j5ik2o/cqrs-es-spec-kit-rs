@@ -83,7 +83,7 @@
   - CloudWatch Logs、X-Ray、FireLens などを利用して構造化ログとメトリクスを収集し、相関 ID を通じてトレース可能にする。
   - オートスケーリング条件やジョブスケジューリング（EventBridge Scheduler 等）を設計し、ECS アプリケーションの可用性を確保する。
 - **ローカルサンドボックス**
-  - `docker-compose.local.yml` に定義された LocalStack・MySQL・Redis を使用し、Lambda デプロイや BFF/Next.js のローカル実行手順を docs/local-sandbox.md に沿って行う。
+  - `docker-compose.yml` に定義された LocalStack・MySQL・Redis を使用し、Lambda デプロイや BFF/Next.js のローカル実行手順を docs/local-sandbox.md に沿って行う。
   - 初期化は `scripts/localstack/bootstrap.sh`、Lambda デプロイは `scripts/localstack/deploy-lambdas.sh` を必ず利用する。
   - LocalStack 上での IAM ロールはダミー ARN を許容するが、本番相当のポリシー構成を `awslocal` コマンドで再現し、差分は記録する。
 
