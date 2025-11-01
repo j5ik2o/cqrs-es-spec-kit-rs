@@ -15,7 +15,7 @@
 **Primary Dependencies**: [例: axum, async-graphql, sqlx など]  
 **Storage**: [例: DynamoDB, MySQL, Redis など]  
 **Testing**: [例: cargo test, cargo lambda build, LocalStack E2E など]  
-**Target Platform**: [例: AWS Lambda, Next.js BFF, CLI など]  
+**Target Platform**: [例: AWS ECS (Fargate) + AWS Lambda, Next.js BFF, CLI など]  
 **Project Type**: [single/web/mobile など。憲章の構成に合わせて記述]  
 **Performance Goals**: [例: p95 < 200ms, Kinesis レイテンシ < 2s など]  
 **Constraints**: [例: DynamoDB ハッシュキー設計、Kinesis パーティション数 など]  
@@ -28,7 +28,7 @@
 - [ ] DDD境界: 集約ルート・不変条件・サービス分離・依存方向が「DDD集約境界の厳守」に合致しているか。
 - [ ] イベントストア: DynamoDB + `event-store-adapter-rs`、DynamoDB Streams→Lambda（イベントフォワーダー）→Kinesis→Lambda（リードモデル更新）→MySQL の構成と通知基盤（Redis Pub/Sub/Streams）が「イベントストア標準化とDynamoDB運用」に沿っているか。
 - [ ] CQRS/GraphQL契約: コマンドサービス・BFF・Next.js の責務分離、GraphQL Query/Mutation/Subscription 契約、BFF の役割が「CQRSとGraphQL契約の一貫性」に従っているか。
-- [ ] サンドボックス: LocalStack / MySQL / Redis 手順、`docker-reuse` 設定、`scripts/localstack/*` の運用が「ローカルサンドボックス整合性」の要求を満たすか。
+- [ ] サンドボックス: LocalStack / MySQL / Redis 手順、Lambda デプロイ (`scripts/localstack/deploy-lambdas.sh`) と ECS アプリのローカル実行方針が「ローカルサンドボックス整合性」の要求を満たすか。
 - [ ] ドキュメント同期: proposal/plan/spec/tasks の整合性、テスト戦略、CI ゲートが「OpenSpecドキュメント同期と品質ゲート」に従っているか。
 
 ## Project Structure
