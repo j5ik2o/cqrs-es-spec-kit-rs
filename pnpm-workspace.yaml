@@ -1,0 +1,12 @@
+# pnpm Workspace Configuration
+# モノレポ構成でフロントエンドパッケージを管理
+
+packages:
+  # Next.js フロントエンドアプリケーション
+  - 'apps/frontend'
+
+  # フロントエンドモジュール
+  - 'apps/frontend/modules/*'
+
+  # 将来的な追加アプリケーション用
+  - 'apps/*'
