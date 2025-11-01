@@ -14,6 +14,42 @@
         "/Users/j5ik2o/Sources/cqrs-es-spec-kit-rs"
       ],
       "env": {}
+    },
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {}
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ],
+      "env": {}
+    },
+    "chrome-devtools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "chrome-devtools-mcp@latest"
+      ],
+      "env": {}
+    },
+    "vibe_kanban": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "vibe-kanban",
+        "--mcp"
+      ],
+      "env": {}
     }
   }
 }
