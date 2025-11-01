@@ -28,7 +28,7 @@
 - Next.js デプロイ構成（Serverless/Edge/Node.js 常駐）によっては 長時間接続を保証できないため、SSE/WebSocket の対応可否を事前確認。
 - RSC は API Routes をフェッチして静的データ化し、クライアント側でリアルタイム反映を行う（ハイブリッド構成）。
 
-## 案 B: Rust 製 BFF（GraphQL Gateway/Subscription 提供）
+## Rust 製 BFF（GraphQL Gateway/Subscription 提供）
 
 ### 概要
 - Next.js とは別に Rust で専用 BFF サーバを構築し、GraphQL Query/Mutation/Subscription を提供する。
