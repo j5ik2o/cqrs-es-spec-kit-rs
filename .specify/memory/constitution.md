@@ -1,190 +1,50 @@
-<!--
-Sync Impact Report
-Version change: 1.13.0 → 1.14.0
-Modified principles:
-- 追加技術制約（Primitive Obsession 回避とドメイン振る舞いを追加）
-- プレゼンテーションと BFF アーキテクチャ（RSC/GraphQL/BFF の責務を明確化）
-Added sections:
-- なし
-Removed sections:
-- なし
-Templates requiring updates:
-- ✅ .specify/templates/plan-template.md
-- ✅ .specify/templates/spec-template.md
-- ✅ .specify/templates/tasks-template.md
-- ✅ README.md
-- ✅ openspec/project.md
-- ✅ .codex/prompts/speckit.plan.md
-Follow-up TODOs:
-- なし
--->
-# DDD Base with Spec JS 憲章
+# [PROJECT_NAME] Constitution
+<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
 
 ## Core Principles
 
-### ドメイン中心アーキテクチャ
-- MUST ドメイン層はエンティティ・値オブジェクト・ドメインサービスで構成し、ビジネスルールを必ずこの層に集約する。
-- MUST ユースケース層はドメイン層の公開インターフェイスだけに依存し、インフラ詳細や UI からの依存を侵入させない。
-- MUST インターフェースアダプタ層はユースケース層経由でのみドメイン機能を呼び出し、依存方向を内向きに限定する。
-- MUST 依存関係は「インターフェースアダプタ → ユースケース → ドメイン」の方向のみ許可し、横断的関心事はインフラストラクチャから共有する。
-- MUST インターフェースアダプタ層およびユースケース層はいずれもドメイン層へ依存できるが、ドメイン層からの外向き依存を禁止する。
-- MUST リポジトリなどのポートはドメイン（または契約モジュール）で定義し、実装はインターフェースアダプタ層に閉じ込める。
-理由: 層ごとの責務境界を厳格に保つことで変更時もビジネスロジックの安全性と再利用性を維持する。
+### [PRINCIPLE_1_NAME]
+<!-- Example: I. Library-First -->
+[PRINCIPLE_1_DESCRIPTION]
+<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
 
-### 仕様駆動の意思決定
-- MUST 新規または変更作業は `/specs/` 配下の仕様書（spec-template.md 由来）を作成し、合意してから着手する。
-- MUST 仕様書にはユースケース、受入条件、ドメインへの影響、制約を明記し、変更が発生した場合は必ず更新する。
-- MUST 憲章違反が疑われる要求は仕様段階で解決するまで実装を進めない。
-理由: 仕様を先に合意することで DDD モデルと利害関係者の期待を同期させ、後戻りを防ぐ。
+### [PRINCIPLE_2_NAME]
+<!-- Example: II. CLI Interface -->
+[PRINCIPLE_2_DESCRIPTION]
+<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
 
-### ユースケース単位のモジュール性
-- MUST 各ユースケースは専用のアプリケーションサービスで実装し、他ユースケースへ直接依存しない。
-- MUST ドメインオブジェクトの生成・状態変更はユースケース層を経由させ、副作用を追跡できるようにする。
-- MUST ユースケースごとに計測可能な完了条件とテストを定義し、独立デプロイ可能な単位として扱う。
-理由: ユースケース境界を守ることで変更の影響範囲を局所化し、MVP 検証を迅速に進められる。
+### [PRINCIPLE_3_NAME]
+<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
+[PRINCIPLE_3_DESCRIPTION]
+<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
 
-### テストファースト検証
-- MUST ドメイン層・ユースケース層の自動テスト（単体・契約・統合）を実装前に記述し、失敗を確認してからコードを書く。
-- MUST ドメイン不変条件とエラーシナリオは自動テストで網羅し、レビューで検証結果を確認する。
-- MUST テストは spec-template の受入条件とトレースできるようにし、破壊的変更時は同時に更新する。
-- MUST エラーハンドリングは回復可能性に基づく振る舞いテストを含め、戻り値型（Result 等）の期待値を明示する。
-理由: テスト駆動で境界を具現化し、仕様逸脱を早期に検出する。
+### [PRINCIPLE_4_NAME]
+<!-- Example: IV. Integration Testing -->
+[PRINCIPLE_4_DESCRIPTION]
+<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
 
-### ドキュメント同期と追跡性
-- MUST plan-template.md・tasks-template.md・spec-template.md に基づく成果物を最新状態に保ち、実装との乖離を禁止する。
-- MUST コミットや PR には該当する仕様・ユースケース ID を明記し、履歴から判断できるようにする。
-- MUST エラー分類・回復方針・戻り値型の決定を仕様とタスクへ反映し、例外の使用箇所をレビューで追跡できるようにする。
-- MUST 構成やインフラの変更は quickstart や運用手順へ同時に反映し、利用者のオンボーディングを阻害しない。
-理由: ドキュメントとコードを同期させることでドメイン知識の属人化と再作業を抑制する。
+### [PRINCIPLE_5_NAME]
+<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
+[PRINCIPLE_5_DESCRIPTION]
+<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
 
-## 追加技術制約
-- MUST リポジトリは `references/cqrs-es-example-rs/modules` 配下にクリーンアーキテクチャの層ごと（例: `modules/command/domain`, `modules/command/processor`, `modules/command/interface-adaptor-impl`, `modules/rmu`）のサブプロジェクトを配置し、各パッケージは外向き依存のみ許可する。`references/cqrs-es-example-rs/modules` のレイアウトから逸脱する場合は仕様で理由と影響範囲を明記する。
-- MUST インフラアクセスはユースケース層が定義するポートを介して実装し、アダプタはドメイン型を変換せずに受け渡す。
-- MUST 技術選定やバージョンアップを行う場合は仕様書に「技術制約」節を追加し、互換性検証手順を記録する。
-- SHOULD Rust Toolchain の LTS バージョンで運用し、変更時は互換性テストを実施する。
-- MUST 値オブジェクトは識別子を持たず不変な設計とし、属性の検証は生成時に完了させる。
-- MUST Primitive Obsession を避け、金額や数量などのドメイン固有の値は必ず専用の値オブジェクトで表現し、許容範囲・単位・演算を明示する。`number` や `string` 等のプリミティブを直接ドメイン層で利用してはならない。
-- MUST 値オブジェクトは内部状態を公開する getter を提供しない。必要な場合は `to_string()` や `to_ulid()` などの変換メソッドを用意するに留め、内部フィールドを直接返すことを禁止する。
-- SHOULD どうしても内部値へのアクセスが必要なケースでは、`breach_encapsulation_of_*` といった警告的な API 名を用いて例外的ルートを設け、レビューで利用可否を毎回確認する。
-- MUST エンティティと集約はトランザクション境界と不変条件を保護し、外部は必ず集約ルート経由で操作する。
-- MUST ドメインサービスはエンティティや値オブジェクトのみを受け取り・返す純粋関数として実装し、内部でリポジトリや永続化責務を利用しない。
-- MUST ドメインサービスは複数集約や複雑なルールを束ねる場合にのみ利用し、ユビキタス言語に沿った命名を行う。
-- MUST バリデータは値オブジェクトのコンストラクタを通じて検証し、生成に成功した場合は値オブジェクトを返し、失敗時はエラーを返却する。
-- MUST ドメインモデル（集約・値オブジェクト）はデータ保持のみを行う構造体ではなく、ユビキタス言語に基づく振る舞いを公開する。`references/cqrs-es-example-rs/modules/command/domain/src/group_chat.rs` のようにドメイン操作は集約メソッド（射）としてモデリングする。
-- MUST システム全体で CQRS と Event Sourcing を採用し、コマンドモデルとクエリモデルの責務分離を維持する。
-- MUST イベントストアには `j5ik2o/event-store-adapter-rs` を利用し、イベント永続化・ストリーム管理・スナップショットをこのアダプタで実装する。
-- MUST コマンドは `references/cqrs-es-example-rs/modules/command/domain/src/group_chat.rs` に倣い、集約が公開するメソッドとして実装し、別個のコマンドクラスを作成しない。
-- MUST ドメインイベントは `references/cqrs-es-example-rs/modules/command/domain/src/group_chat/events.rs` の形式を踏襲し、集約ごとに専用ファイルでイベント型を定義・バージョン管理する。
-- MUST ドメインモデルとアプリケーションサービスは GraphQL サーバ（Rust）に内包し、GraphQL の Mutation/Query/Subscription がユースケースと 1 対 1 で対応する。
-- MUST プレゼンテーション層は Next.js で実装し、UI から GraphQL サーバへのアクセスは Next.js API Routes を介した BFF を経由させる。
-- MUST Next.js API Routes は GraphQL サーバのクライアントとなり、UI からの入力検証・セッション管理・レスポンス整形を担い、UI から直接 GraphQL サーバへアクセスさせない。
-- MUST GraphQL サーバはプレゼンテーション層の状態や Next.js 固有のロジックに依存せず、純粋にドメイン／ユースケースロジックのみを保持する。
-- SHOULD Next.js フロントエンドは API Routes を通じた GraphQL 呼び出しを型安全なクライアント（例: GraphQL Code Generator）で行い、ドメインイベント通知はサブスクリプション経由で受け取る。
+## [SECTION_2_NAME]
+<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
 
-## クラウド基盤とローカル検証
-- MUST 本番・ステージング・QA 環境は AWS を標準基盤とし、アプリケーション・イベントストア・周辺サービスを AWS 上のマネージド/セルフホスト資源で運用する。
-- MUST イベントバスは AWS Kinesis Data Streams を利用し、ドメインイベント配信・リプレイ・監視をこのストリーム上で行う。設定は IaC（AWS CDK / CloudFormation / Terraform のいずれか）でコード化する。
-- MUST ローカル開発および CI の動作確認は docker compose 上で LocalStack を起動し、AWS サービス（Kinesis、シークレット管理など）との整合を検証する。
-- MUST docker compose / LocalStack 構成はリポジトリ直下でバージョン管理し、環境変数・シークレットの差異が仕様とレンダリングドキュメントに反映されていることを保証する。
-- MUST 仕様・計画・タスクには AWS 環境で使用するサービスと LocalStack での代替方法を明記し、差異がある場合は理由と検証手順を記録する。
-- SHOULD GraphQL サブスクリプションやクライアント通知系のリアルタイム要件は Kinesis と連携したイベント配信フローで検証し、LocalStack 上でもサブスクリプション再生を自動テストする。
+[SECTION_2_CONTENT]
+<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
 
-## プレゼンテーションと BFF アーキテクチャ
-- MUST Next.js は純粋なプレゼンテーション層として SSR/ISR/CSR を提供し、ビジネスロジックを保持しない。
-- MUST Next.js API Routes は Backend for Frontend (BFF) として振る舞い、GraphQL サーバへの通信、セッション/トークン管理、外部 API 連携を集約する。
-- MUST GraphQL サーバ(Rust)はドメインモデル・ユースケース・CQRS/ES フローを提供する単一のアプリケーション境界とし、BFF 以外から直接アクセスさせない。
-- MUST BFF から GraphQL サーバへの通信は明示的なクライアントライブラリ（GraphQL フェッチャーなど）を介し、エラーマッピングと監査ログを記録する。
-- MUST ブラウザ側の React コンポーネント（クライアントコンポーネント）は BFF API Routes 経由で GraphQL Mutation/Query を実行し、アクセストークンを直接扱わない。
-- MUST RSC（React Server Components）はサーバー側で `lib/auth` 等の共通トークン管理モジュールを利用し、GraphQL サーバへ直接アクセスしてよいが、ブラウザ側で使用する API Route と同じクライアント実装（エラーハンドリング/監査ロガー）を再利用する。
-- MUST API Routes は OAuth2/OIDC フロー（PKCE、リフレッシュ、セッション Cookie）を担当し、RSC・クライアントコンポーネントから共有されるトークン管理モジュールを提供する。
-- MUST UI 層は BFF を介した GraphQL 経由のデータ取得/更新・サブスクリプションによるリアルタイム受信を実装し、直接 DB やイベントバスへアクセスしない。
-- SHOULD BFF は GraphQL スキーマのバージョン差異を吸収し、フロントエンドへ安定した API 契約を提供する。
+## [SECTION_3_NAME]
+<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
 
-## 永続化ストアとリードモデル
-- MUST コマンドモデル（イベントストアを含む書き込み側）の永続化には AWS DynamoDB を使用し、テーブル設計・パーティションキー・スループット計画を仕様およびタスクで定義する。
-- MUST リードモデルは MySQL（AWS RDS for MySQL など互換サービスを含む）で運用し、投影テーブルのスキーマとインデックス戦略を仕様に記載する。
-- MUST Read Model Updater は AWS Lambda として実装し、Kinesis イベントをトリガに DynamoDB のイベントを MySQL に投影する。Lambda のデプロイ、IAM、監視は IaC に含める。
-- MUST LocalStack 環境では DynamoDB Local 相当と MySQL コンテナを docker compose で起動し、Lambda 相当のハンドラをローカルで実行できるようにする。
-- MUST Plan・Spec・Tasks には DynamoDB/ MySQL のスキーマ変更手順、Lambda デプロイ方法、テストでの代替構成を明示する。
-- MUST DynamoDB のジャーナル/スナップショットテーブル形式は `references/cqrs-es-example-rs/tools/dynamodb-setup/create-tables.sh` を基準にし、差異を導入する場合は仕様で理由と互換性手順を記録する。
-- SHOULD `references/cqrs-es-example-rs` の構成と差異がある場合は理由と対策を残し、同構成を採用する際は適用箇所を明記して再利用する。
-
-## パッケージ構成と依存制御
-- MUST サブプロジェクトのディレクトリレイアウトは `references/cqrs-es-example-rs/modules` を基準にし、クリーンアーキテクチャの各層（domain / processor(ユースケース層) / interface / infrastructure / rmu 等）を独立したパッケージとして管理する。
-- MUST 各crateの依存方向を「外側 → 内側」の一方向に限定し、逆方向依存が宣言された場合はビルドもしくは型チェックで失敗するように設定する。
-- MUST Rust プロジェクトリファレンス・パスエイリアス・lint ルールを組み合わせ、`domain` が `processor(ユースケース層)` に依存する等の逆依存を静的解析で検出してエラー化する。
-- MUST crateとしてのレイヤー間の依存ルールは `references/cqrs-es-example-rs/modules/*` の `Cargo.toml` を参照して定義し、差異がある場合は仕様に理由とビルド/テストでの検証方法を明記する。
-- SHOULD 新規パッケージ追加時はクリーンアーキテクチャの層を跨がないか確認し、ワークスペース設定とビルドパイプラインに必ず登録する。
-
-## CQRS/Event Sourcing 運用
-- コマンドハンドラは集約を操作し、成功時はイベントを生成してイベントストアへ永続化する。
-- クエリは読み取り専用の投影（リードモデル）を参照し、イベント購読により最新状態へ同期する。
-- イベントスキーマはバージョン管理し、アップキャスト・後方互換ポリシーを定義してドキュメント化する。
-- イベントストア接続やストリーム取り扱いは `j5ik2o/event-store-adapter-rs` の設定ファイルに集約し、環境差異をコードに散在させない。
-- テストはコマンド→イベント→投影の流れを網羅し、イベント再生とリードモデル復元が可能であることを証明する。
-- クエリ側はドメインモデルやドメインリポジトリを利用せず、リードモデル用データベースへ直接アクセスして要求を満たす。
-- コマンド側はイベント保存が主目的だが、集約の再構築や他集約の状態確認のためのリプレイなど、最終的にいずれかの集約更新へ至る文脈に限り読み込みを許容する。
-
-## リファレンス資産
-- `references/event-store-adapter-rs`: 公式イベントストアアダプタ実装。設定、リプレイ、テスト戦略を参照し、アダプタ実装・設定が最新ガイドラインと一致していることを保証する。
-- `references/cqrs-es-example-rs`: CQRS/Event Sourcing サンプル。コマンド/クエリ分離、投影設計、イベントハンドラの参考にし、差異がある場合は仕様・タスクに理由と対策を記録する。
-- リファレンスは理解のための参照専用とし、コードのコピーや改変を本リポジトリへ直接取り込むことを禁止する。必要に応じて自前で実装し、設計意図だけを反映する。
-- 仕様・計画・タスクには参照したリファレンスのパスを記載し、レビュアーが差分を追跡できるようにする。
-
-## ドメインモデル開発手順
-1. ドメインテスト作成: 値オブジェクト・エンティティの振る舞いと制約を自動テストで定義し、エッジケースを明文化する。
-2. モデル実装: テストを満たすドメインモデルをビルディングブロック原則（不変・ID 管理・集約境界）に沿って実装する。
-3. リファクタリング: 仕様を変えずに重複排除と責務分離を行い、命名をユビキタス言語に統一する。
-4. インメモリリポジトリ: ドメイン層とユースケースの検証用にインメモリ実装を追加し、外部依存から切り離してテストする。
-5. ユースケース実装: ユースケーステストを先に定義し、ドメインモデルとリポジトリを組み合わせてアプリケーションサービスを実装する。
-6. アダプタ実装: 永続化・コントローラ・プレゼンテーションを順に実装し、入力検証と出力変換をユースケース層経由で行う。
-7. 統合・結合テスト: 実インフラを用いた統合テストとコンポーネント間結合テストでフロー全体を検証する。
-
-## ドメインモデル実践リスク
-- ドメインモデルの歪曲: インフラや UI 先行で設計した場合、ビジネスルールが正しく表現されずトレーサビリティが失われる。
-- 技術的関心事の漏洩: 永続化やトランザクション制御がモデルに侵入すると再利用性とテスト容易性が低下する。
-- テスト困難性: 外部依存を含むモデルは実行速度が低下し、エッジケース検証が抜け落ちる。
-- 変更容易性の低下: 層間依存が複雑化し、小さなドメイン変更でも広範な修正が必要になる。
-- 概念整合性の喪失: ユビキタス言語が崩れ、ドメインエキスパートと開発者の共通理解が損なわれる。
-
-## クリーンアーキテクチャ構造
-- ドメイン層: 純粋なビジネスルール（エンティティ・値オブジェクト・ドメインサービス・ポート）で構成し、技術詳細を含めない。
-- ユースケース層: アプリケーション固有のフロー制御を担い、ドメインモデルの操作やイベント処理を調整する。
-- インターフェースアダプタ層: コントローラ・ゲートウェイ・リポジトリアダプタを配置し、外部入出力や DTO 変換を実装する。
-- インフラストラクチャ層: IO を伴わない共通ユーティリティ、設定、ID 生成、Option/Result 型など横断的関心事を提供する。
-- 依存方向: インターフェースアダプタ → ユースケース → ドメイン（内向きのみ）。各層はより内側の層にのみ依存する。
-- CQRS と Event Sourcing はユースケース層でコマンド/クエリを分離し、イベント処理をインターフェースアダプタ層のゲートウェイを通じて行い、ドメインサービスが外部依存を持たないようにする。
-
-## インフラストラクチャの扱い
-- インフラストラクチャ層はどの層からも利用できる汎用機能のみを提供し、外部サービス固有の実装を含めない。
-- 永続化・メッセージングなどの具体実装はインターフェースアダプタ層に配置し、ドメイン・ユースケース層は機能インターフェイスに依存する。
-- 横断的関心事を追加する際は、その機能が IO を伴うかどうかを評価し、適切な層へ配置する。
-- インフラストラクチャ層は RPC やデータベースアクセスといった Gateway 責務を一切担わず、これらはインターフェースアダプタ層に限定する。
-
-## エラーハンドリング戦略
-- 回復可能なエラーは `Result` / `Option` 等の戻り値型で表現し、例外を用いない。バリデーション、在庫不足、権限不足などドメインエラーは正常系の分岐として扱う。
-- リポジトリ・外部サービスの一時的エラーも戻り値型で返し、ユースケース層でリトライ・代替フロー・通知を選択する。
-- 仕様策定時にエラー分類（回復可能/不能）とユースケースの対応を記述し、テストケースに反映する。
-- Java 等の言語でチェック例外を用いる場合は境界レイヤーで捕捉して戻り値型へ変換し、ドメイン層・ユースケース層に伝播させない。
-- 戻り値型にはエラー情報を表す型（例: `InvalidTransitionError`, `InsufficientStockError`）を用いて、汎用的な `Error` 名は避ける。
-
-## 回復不能エラー指針
-- 回復不能な状況（不正引数・不正状態・到達不能コードなど）は明示的な例外（`IllegalArgumentException`, `IllegalStateException`, `AssertionError` 等）または `panic` を使用し、発生箇所を限定する。
-- 回復不能例外はログ・監視で検出可能にし、境界で握り潰さず停止またはフェイルファストする。
-- 回復不能例外は外部入力ではなく内部矛盾を示す用途に限定し、外部入力由来のエラーを錯誤して投げない。
-- 例外型は目的に応じた名称（例: `IllegalStateError`, `InvalidTransitionException`）で定義し、呼び出し側から意味が分かるようにする。
-
-## 開発ワークフロー
-1. 仕様策定: spec-template.md を用いてユーザーストーリー・受入基準・ドメイン影響を定義し、承認を得る。
-2. 研究・設計: plan-template.md を基に技術調査とドメインモデルの整理を行い、ユースケース単位のアプローチを固める。
-3. タスク分解: tasks-template.md でユースケース単位のタスクとテストタスクを列挙し、並列実行可否を明記する。
-4. 実装・検証: テストファーストで実装し、各ユースケースが単独で動作・デプロイできることを確認する。
-5. レビュー・同期: PR レビューで憲章原則に基づくチェックを行い、必要なドキュメントを更新してからマージする。
+[SECTION_3_CONTENT]
+<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
 
 ## Governance
-- この憲章は DDD Base with Spec JS の開発・運用プロセスに対して最優先で適用され、矛盾するガイドラインを上書きする。
-- 改訂は Pull Request で提案し、影響を受けるテンプレート・ドキュメントの更新計画と検証結果を添付した場合にのみ承認される。
-- バージョンはセマンティックバージョニングを採用する（破壊的変更は MAJOR、原則追加や大幅拡張は MINOR、文言整理は PATCH）。
-- 憲章遵守レビューは各主要リリース前と四半期ごとに実施し、違反が判明した場合は是正計画と期日を記録する。
+<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-**Version**: 1.14.0 | **Ratified**: 2025-10-31 | **Last Amended**: 2025-10-31
+[GOVERNANCE_RULES]
+<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+
+**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
+<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
