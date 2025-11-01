@@ -1,274 +1,251 @@
 ---
 
-description: "フィーチャ実装のためのタスクテンプレート"
+description: "Task list template for feature implementation"
 ---
 
-# タスク: [FEATURE NAME]
+# Tasks: [FEATURE NAME]
 
-**入力**: `/specs/[###-feature-name]/` 配下のドキュメント  
-**事前条件**: plan.md（必須）、spec.md（必須）、research.md、data-model.md、contracts/
+**Input**: Design documents from `/specs/[###-feature-name]/`
+**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**テスト**: テストタスクは必須。各ユースケースの単体・契約・統合テストを先に追加し、回復可能・回復不能エラーの扱いを含めて実装前に失敗させる。
+**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
 
-**編成方針**: タスクはユーザーストーリー単位にグルーピングし、独立した実装・テスト・デプロイを可能にする。
+**Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
-## 表記形式: `[ID] [P?] [Story] 説明`
+## Format: `[ID] [P?] [Story] Description`
 
-- **[P]**: 並列実行可能（異なるファイルで依存関係なし）の場合に付与する。
-- **[Story]**: 対応するユーザーストーリー。例: US1, US2, US3。
-- 説明には正確なファイルパスを記載する。
+- **[P]**: Can run in parallel (different files, no dependencies)
+- **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
+- Include exact file paths in descriptions
 
-## パス規約
+## Path Conventions
 
-- **標準構成**: `packages/command/domain/src`, `packages/command/processor/src`, `packages/command/interface-adaptor-impl/src`, `packages/query/interface-adaptor/src`, `packages/rmu/src`
-- **ワークスペース**: ルートの `packages/` 配下にサブプロジェクトを配置し、`references/cqrs-es-example-js/packages` の階層と整合させる（pnpm + turbo で登録）。
-- **テスト**: 共通の `tests/` ディレクトリまたは各パッケージ直下の `__tests__` を活用し、ユニット/契約/統合テストをレイヤーごとに配置する。
-- plan.md の構成方針と矛盾しないよう必要に応じて修正する。
+- **Single project**: `src/`, `tests/` at repository root
+- **Web app**: `backend/src/`, `frontend/src/`
+- **Mobile**: `api/src/`, `ios/src/` or `android/src/`
+- Paths shown below assume single project - adjust based on plan.md structure
 
-<!--
+<!-- 
   ============================================================================
-  注意: 以下のタスクはサンプル。/speckit.tasks コマンドは実際の仕様に合わせて生成する。
-  - spec.md のユーザーストーリー（優先度を含む）
-  - plan.md の技術方針
-  - data-model.md のエンティティ
-  - contracts/ の契約
-  を反映し、ユーザーストーリーごとに独立した MVP を構築できること。
+  IMPORTANT: The tasks below are SAMPLE TASKS for illustration purposes only.
+  
+  The /speckit.tasks command MUST replace these with actual tasks based on:
+  - User stories from spec.md (with their priorities P1, P2, P3...)
+  - Feature requirements from plan.md
+  - Entities from data-model.md
+  - Endpoints from contracts/
+  
+  Tasks MUST be organized by user story so each story can be:
+  - Implemented independently
+  - Tested independently
+  - Delivered as an MVP increment
+  
+  DO NOT keep these sample tasks in the generated tasks.md file.
   ============================================================================
 -->
 
-## フェーズ1: セットアップ（共通基盤）
+## Phase 1: Setup (Shared Infrastructure)
 
-**目的**: プロジェクト構造とツールチェーンの初期化
+**Purpose**: Project initialization and basic structure
 
-- [ ] T001 実装計画に沿ってディレクトリと基盤コードを整備する
-- [ ] T002 選定したフレームワークと依存ライブラリを導入する
-- [ ] T003 [P] Lint/フォーマッタ/型チェックを設定する
-
----
-
-## フェーズ2: 基盤整備（全ユースケースの前提）
-
-**目的**: すべてのユースケース実装前に必要なアプリケーション・インフラ基盤を構築する
-
-**⚠️ 重要**: このフェーズが完了するまでユーザーストーリー実装を開始してはならない。
-
-- [ ] T004 ユースケース共通のドメインエンティティ・値オブジェクトを定義する（Primitive Obsession を避け、数量・金額などは専用の値オブジェクトで表現する）
-- [ ] T005 [P] アプリケーションサービスのポート・例外方針を確立する
-- [ ] T006 [P] 永続化・API などのアダプタ骨格を作成する
-- [ ] T007 監査ログ・トレースなど横断的関心事を組み込む
-- [ ] T008 環境変数管理・設定読み込みの仕組みを整え、AWS 向け設定と LocalStack/docker compose の切り替えを用意する
-- [ ] T009 インメモリリポジトリを `packages/command/interface-adaptor-impl/src/repository/in-memory` に実装し、ユースケーステストから利用できるようにする
-- [ ] T010 インフラストラクチャ共通ユーティリティ（ロギング・設定・ID 生成など）を `infrastructure/` 以下に整備する（IO を含めない）
-- [ ] T011 [P] `@j5ik2o/event-store-adapter-js` の接続設定を `infrastructure/` に実装し、AWS 上の本番構成と LocalStack 用 docker compose 設定を整備する
-- [ ] T012 イベント投影/サブスクライバの基盤（Kinesis を用いたイベントバス・リードモデル更新）を用意し、LocalStack での再生テストを含めユニットテストで再生可能にする
-- [ ] T013 エラーハンドリング方針をドキュメントに反映し、回復可能/不能の分類と戻り値型・例外境界を明記する
-- [ ] T014 `references/event-store-adapter-js` と `references/cqrs-es-example-js` をレビューし、設計意図のみ参照して差分を記録（コードのコピーや改変取り込みは禁止）。CQRS のクエリ側がドメインモデル・リポジトリへ依存せずリードデータベースへ直接アクセスする設計になっているか確認する
-- [ ] T015 GraphQL サーバのベース（スキーマ、サーバ起動、ドメイン層との結線）を `backend/graphql/` 等に構築し、Mutation/Query/Subscription をユースケースにバインドする
-- [ ] T016 Next.js API Routes に BFF 基盤を用意し、GraphQL クライアント構成・セッション/トークン管理・監査ログフックを実装する
-- [ ] T017 Next.js プレゼンテーション層の土台（レイアウト、データ取得フック、GraphQL クライアント生成）を準備し、BFF 経由でデータ取得できることを確認する
-- [ ] T018 DynamoDB（コマンド側）用のテーブル構成・Terraform/CDK 定義を作成し、LocalStack で動作確認する
-- [ ] T019 MySQL リードモデル用のスキーマとマイグレーション基盤を整備し、docker compose で起動する
-- [ ] T020 Read Model Updater を AWS Lambda として雛形実装し、Kinesis トリガ/ローカル実行（SAM 等）の手順を用意する
-- [ ] T021 DynamoDB のジャーナル/スナップショットテーブル形式を `references/cqrs-es-example-js/tools/dynamodb-setup/create-tables.sh` と照合し、差分がある場合は仕様・計画・タスクへ記録する
-- [ ] T022 pnpm のワークスペース設定を構築し、`packages/` 配下を `references/cqrs-es-example-js/packages` に倣った構造で作成する
-- [ ] T023 TypeScript プロジェクトリファレンス・ESLint/biome ルール・ビルドタスクで層の逆依存が発生すると失敗する仕組みを導入する
-- [ ] T024 GraphQL アクセス用の共通トークン管理・クライアントモジュールを `packages/application` 等に定義し、API Routes/RSC から再利用できるようにする
-- [ ] T025 BFF(API Routes) と RSC の双方で共通モジュールを利用する統合テストを追加し、直接トークンを扱う実装が存在しないことを確認する
-
-**チェックポイント**: 基盤が整い、各ユースケースが独立に着手可能になった状態。
+- [ ] T001 Create project structure per implementation plan
+- [ ] T002 Initialize [language] project with [framework] dependencies
+- [ ] T003 [P] Configure linting and formatting tools
 
 ---
 
-## フェーズ3: ユーザーストーリー 1 - [タイトル]（優先度: P1）🎯 MVP
+## Phase 2: Foundational (Blocking Prerequisites)
 
-**ゴール**: [このストーリーが提供する価値を簡潔に記述]
+**Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
 
-**独立テスト方法**: [単体で検証する手順]
+**⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-### テスト（必須）
+Examples of foundational tasks (adjust based on your project):
 
-> **重要**: 以下のテストタスクを先に実装し、失敗することを確認してから機能を実装する。
+- [ ] T004 Setup database schema and migrations framework
+- [ ] T005 [P] Implement authentication/authorization framework
+- [ ] T006 [P] Setup API routing and middleware structure
+- [ ] T007 Create base models/entities that all stories depend on
+- [ ] T008 Configure error handling and logging infrastructure
+- [ ] T009 Setup environment configuration management
 
-- [ ] T026 [P] [US1] ドメイン単体テストを `tests/unit/` に追加する（回復可能エラーと正常系を検証）
-- [ ] T027 [P] [US1] ポート契約テストを `tests/contract/` に追加する（例外変換を含む）
-- [ ] T028 [P] [US1] 統合テストを `tests/integration/` に追加する（外部エラー伝播と代替フローを検証）
-
-### 実装
-
-- [ ] T029 [P] [US1] ドメインモデルを `packages/command/domain/src/...` に追加する（集約メソッドをコマンドとして実装し、独立したコマンドクラスを作成しない）
-- [ ] T030 [P] [US1] ユースケースサービスを `packages/command/processor/src/...` に実装する（Either/Result によるエラー制御を含む）
-- [ ] T031 [US1] アダプタを `packages/command/interface-adaptor-impl/src/...` に実装し、ポートを満たす（例外をドメイン向けエラーに変換し、RPC/DB/イベントストア連携など Gateway 責務を担う）
-- [ ] T032 [US1] バリデーション・エラーハンドリングを組み込む（回復不能エラーはフェイルファスト）
-- [ ] T033 [US1] 観測性（ログ・メトリクス）を追加する
-- [ ] T034 [US1] ドメインサービスが純粋関数であること、およびリファレンスコードをコピーしていないことをレビューする
-- [ ] T035 [US1] コマンドハンドラがイベント保存を主目的に設計され、必要最小限のリプレイ・他集約確認に限定して読み込みを行っていることを確認する
-- [ ] T036 [US1] バリデータが値オブジェクトのコンストラクタ経由で検証し、成功時は値オブジェクトを返し失敗時はエラーを返していることを確認する
-- [ ] T037 [US1] GraphQL スキーマにユースケース専用 Mutation/Query/Subscription を追加し、ドメインサービスと結線する（対応するドメインイベントを `packages/command/domain/src/...-events.ts` に定義する）
-- [ ] T038 [US1] Next.js API Route を実装し、UI からの入力検証・GraphQL 呼び出し・レスポンス整形を行う
-- [ ] T039 [US1] Next.js UI コンポーネントを実装し、BFF 経由でデータ取得・GraphQL サブスクリプション受信・エラー表示を行う
-
-**チェックポイント**: ユーザーストーリー 1 が単独でデプロイ・検証可能になった状態。
+**Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
 ---
 
-## フェーズ4: ユーザーストーリー 2 - [タイトル]（優先度: P2）
+## Phase 3: User Story 1 - [Title] (Priority: P1) 🎯 MVP
 
-**ゴール**: [提供価値]
+**Goal**: [Brief description of what this story delivers]
 
-**独立テスト方法**: [検証手順]
+**Independent Test**: [How to verify this story works on its own]
 
-### テスト（必須）
+### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T040 [P] [US2] ドメイン単体テストを `tests/unit/` に追加する
-- [ ] T041 [P] [US2] 契約テストを `tests/contract/` に追加する
-- [ ] T042 [P] [US2] 統合テストを `tests/integration/` に追加する
+> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-### 実装
+- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
 
-- [ ] T043 [P] [US2] 必要なドメインオブジェクトを拡張する（集約メソッドとしてコマンドを実装し、独立したコマンドクラスを作成しない）
-- [ ] T044 [US2] ユースケースサービスを追加・調整する（エラー戻り値を拡張）
-- [ ] T045 [US2] インターフェイスアダプタを実装し、US1 との衝突を確認する（例外変換と通知。RPC/DB/イベントストア連携はこちらで実装）
-- [ ] T046 [US2] 監査ログや追跡情報を更新する（エラー計測を含む）
-- [ ] T047 [US2] ドメインサービスの純粋性をテストし、永続化依存やリファレンスコードのコピーが混入していないことを検証する
-- [ ] T048 [US2] コマンドハンドラの読み込みがリプレイ/他集約確認など最小限の目的に限定されていることをレビューし、クエリ責務へ逸脱していないことを確認する
-- [ ] T049 [US2] バリデータが値オブジェクトのコンストラクタ経由で検証し、成功時は値オブジェクトを返し失敗時はエラーを返していることを確認する
-- [ ] T050 [US2] GraphQL スキーマ/リゾルバを拡張し、新しいユースケースを Mutation/Query/Subscription に反映する（対応するドメインイベントを `packages/command/domain/src/...-events.ts` に追加する）
-- [ ] T051 [US2] Next.js API Route を拡張し、追加データ型・エラーを BFF で吸収する
-- [ ] T052 [US2] Next.js UI を拡張し、リアルタイム更新や UX 変更を実装する
+### Implementation for User Story 1
 
-**チェックポイント**: ユーザーストーリー 1 と 2 が互いに独立動作し、受入条件を満たす。
+- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
+- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
+- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
+- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T016 [US1] Add validation and error handling
+- [ ] T017 [US1] Add logging for user story 1 operations
+
+**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
 ---
 
-## フェーズ5: ユーザーストーリー 3 - [タイトル]（優先度: P3）
+## Phase 4: User Story 2 - [Title] (Priority: P2)
 
-**ゴール**: [提供価値]
+**Goal**: [Brief description of what this story delivers]
 
-**独立テスト方法**: [検証手順]
+**Independent Test**: [How to verify this story works on its own]
 
-### テスト（必須）
+### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T052 [P] [US3] ドメイン単体テストを `tests/unit/` に追加する
-- [ ] T053 [P] [US3] 契約テストを `tests/contract/` に追加する
-- [ ] T054 [P] [US3] 統合テストを `tests/integration/` に追加する
+- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
 
-### 実装
+### Implementation for User Story 2
 
-- [ ] T055 [P] [US3] ドメインモデル・ユースケースを拡張する（新しいエラー型を定義し、コマンドは集約メソッドとして実装する）
-- [ ] T056 [US3] インターフェイスアダプタを実装する（外部エラーをマッピングし、RPC/DB/イベントストア連携を提供）
-- [ ] T057 [US3] 監視・メトリクスを更新する（エラー指標を追加）
-- [ ] T058 [US3] ドメインサービスで外部依存が追加されていないか、リファレンスコードがコピーされていないかを静的解析・レビューで確認する
-- [ ] T059 [US3] コマンドフロー全体をリプレイし、読み込みが許容範囲に収まっていることとクエリ責務へ逸脱していないことを検証する
-- [ ] T060 [US3] バリデータが値オブジェクトのコンストラクタ経由で検証し、成功時は値オブジェクトを返し失敗時はエラーを返していることを確認する
-- [ ] T061 [US3] GraphQL リゾルバ・スキーマを拡張し、サブスクリプションや Mutation の追加分を反映する（新しいドメインイベントを `packages/command/domain/src/...-events.ts` に追加する）
-- [ ] T062 [US3] Next.js API Route を更新し、新しいユースケースの入力検証・レスポンス整形・エラーマッピングを追加する
-- [ ] T063 [US3] Next.js UI を更新し、BFF 経由での新しい体験やリアルタイム更新を実装・テストする
+- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
+- [ ] T021 [US2] Implement [Service] in src/services/[service].py
+- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T023 [US2] Integrate with User Story 1 components (if needed)
 
-**チェックポイント**: すべてのユーザーストーリーが独立稼働できる状態。
+**Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
 ---
 
-[必要に応じて追加のユーザーストーリーフェーズを定義する]
+## Phase 5: User Story 3 - [Title] (Priority: P3)
+
+**Goal**: [Brief description of what this story delivers]
+
+**Independent Test**: [How to verify this story works on its own]
+
+### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
+
+- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+
+### Implementation for User Story 3
+
+- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
+- [ ] T027 [US3] Implement [Service] in src/services/[service].py
+- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
+
+**Checkpoint**: All user stories should now be independently functional
 
 ---
 
-## フェーズN: 仕上げと横断的対応
-
-**目的**: 全ユースケースにまたがる改善
-
-- [ ] TXXX [P] ドキュメント（quickstart, README 等）を更新する
-- [ ] TXXX クリーンアーキテクチャの依存方向が守られているかレビューし、違反箇所を是正する
-- [ ] TXXX コードの整備とリファクタリングを行う
-- [ ] TXXX 性能検証と最適化を行う
-- [ ] TXXX イベントストアのリプレイ・スナップショット手順を検証し、ドキュメントと整合させる
-- [ ] TXXX [P] 追加のユニットテストを `tests/unit/` に追加する
-- [ ] TXXX セキュリティ診断・ハードニングを実施する
-- [ ] TXXX quickstart.md の手順を実際に検証する
+[Add more user story phases as needed, following the same pattern]
 
 ---
 
-## 依存関係と実行順序
+## Phase N: Polish & Cross-Cutting Concerns
 
-### フェーズ間依存
+**Purpose**: Improvements that affect multiple user stories
 
-- **セットアップ（フェーズ1）**: 依存なし。即時着手可。
-- **基盤整備（フェーズ2）**: フェーズ1完了が前提。全ユースケースのブロッカー。
-- **ユーザーストーリー（フェーズ3以降）**: フェーズ2完了後に開始。必要なら並列実施。
-- **仕上げ（最終フェーズ）**: 目標とするユーザーストーリー完了後に実施。
-
-### ユーザーストーリー間依存
-
-- **US1 (P1)**: フェーズ2完了後に着手。ほかのストーリーへの依存なし。
-- **US2 (P2)**: フェーズ2完了後に着手。US1 と連携する場合は契約で明示する。
-- **US3 (P3)**: フェーズ2完了後に着手。既存ストーリーとの競合をテストで保証する。
-
-### 各ユーザーストーリー内の順序
-
-- テストを先に記述し、失敗を確認してから実装する。
-- ドメインモデル → ユースケースサービス → アダプタ実装の順で進める。
-- バリデーションと例外処理をまとめて検証する。
-- インターフェースアダプタはユースケース経由でのみドメインへアクセスすることを確認する。
-- ストーリー完了前にドキュメント更新とレビュー準備を行う。
-
-### 並列実行のヒント
-
-- `[P]` が付いたセットアップ・基盤タスクはファイルの競合がない範囲で並列化できる。
-- 同一ユーザーストーリー内でもファイルが独立していれば `[P]` タスクを並列に実施可能。
-- 異なるユーザーストーリーは共通基盤が整備されていれば別担当者で進められる。
+- [ ] TXXX [P] Documentation updates in docs/
+- [ ] TXXX Code cleanup and refactoring
+- [ ] TXXX Performance optimization across all stories
+- [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
+- [ ] TXXX Security hardening
+- [ ] TXXX Run quickstart.md validation
 
 ---
 
-## 並列実行例: ユーザーストーリー 1
+## Dependencies & Execution Order
+
+### Phase Dependencies
+
+- **Setup (Phase 1)**: No dependencies - can start immediately
+- **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories
+- **User Stories (Phase 3+)**: All depend on Foundational phase completion
+  - User stories can then proceed in parallel (if staffed)
+  - Or sequentially in priority order (P1 → P2 → P3)
+- **Polish (Final Phase)**: Depends on all desired user stories being complete
+
+### User Story Dependencies
+
+- **User Story 1 (P1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
+- **User Story 2 (P2)**: Can start after Foundational (Phase 2) - May integrate with US1 but should be independently testable
+- **User Story 3 (P3)**: Can start after Foundational (Phase 2) - May integrate with US1/US2 but should be independently testable
+
+### Within Each User Story
+
+- Tests (if included) MUST be written and FAIL before implementation
+- Models before services
+- Services before endpoints
+- Core implementation before integration
+- Story complete before moving to next priority
+
+### Parallel Opportunities
+
+- All Setup tasks marked [P] can run in parallel
+- All Foundational tasks marked [P] can run in parallel (within Phase 2)
+- Once Foundational phase completes, all user stories can start in parallel (if team capacity allows)
+- All tests for a user story marked [P] can run in parallel
+- Models within a story marked [P] can run in parallel
+- Different user stories can be worked on in parallel by different team members
+
+---
+
+## Parallel Example: User Story 1
 
 ```bash
-# ユーザーストーリー1のテストを一括で失敗させる
-Task: "ドメイン単体テストを tests/unit/test_[name].ts に追加"
-Task: "契約テストを tests/contract/test_[name].ts に追加"
-Task: "統合テストを tests/integration/test_[name].ts に追加"
+# Launch all tests for User Story 1 together (if tests requested):
+Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
+Task: "Integration test for [user journey] in tests/integration/test_[name].py"
 
-# ユーザーストーリー1のドメインモデルを並列で実装
-Task: "値オブジェクトを packages/command/domain/src/value-objects/[name].ts に追加"
-Task: "エンティティを packages/command/domain/src/entities/[name].ts に追加"
-Task: "ユースケースサービスを packages/command/processor/src/[use-case]/[name].ts に実装"
-Task: "アダプタを packages/command/interface-adaptor-impl/src/[adapter]/[name].ts に実装（ユースケース経由でドメインへ）"
+# Launch all models for User Story 1 together:
+Task: "Create [Entity1] model in src/models/[entity1].py"
+Task: "Create [Entity2] model in src/models/[entity2].py"
 ```
 
 ---
 
-## 実装戦略
+## Implementation Strategy
 
-### MVP ファースト（ユーザーストーリー1のみ）
+### MVP First (User Story 1 Only)
 
-1. フェーズ1（セットアップ）を完了する。
-2. フェーズ2（基盤整備）を完了し、インメモリリポジトリとインフラユーティリティを整備する。
-3. フェーズ3（ユーザーストーリー1）を完了する。
-4. **検証**: US1 のテストを全て実行し、仕様と一致することを確認。
-5. 準備が整えばデプロイ / デモを行う。
+1. Complete Phase 1: Setup
+2. Complete Phase 2: Foundational (CRITICAL - blocks all stories)
+3. Complete Phase 3: User Story 1
+4. **STOP and VALIDATE**: Test User Story 1 independently
+5. Deploy/demo if ready
 
-### インクリメンタルデリバリー
+### Incremental Delivery
 
-1. セットアップと基盤整備を完了し、基盤を固定する。
-2. US1 を追加 → テスト → デプロイ / デモ。
-3. US2 を追加 → テスト → デプロイ / デモ。
-4. US3 を追加 → テスト → デプロイ / デモ。
-5. 各ストーリーで価値を追加しつつ既存機能を維持する。
+1. Complete Setup + Foundational → Foundation ready
+2. Add User Story 1 → Test independently → Deploy/Demo (MVP!)
+3. Add User Story 2 → Test independently → Deploy/Demo
+4. Add User Story 3 → Test independently → Deploy/Demo
+5. Each story adds value without breaking previous stories
 
-### チーム並列戦略
+### Parallel Team Strategy
 
-1. チーム全員でフェーズ1・2を完了させ共通基盤を固める。
-2. 基盤整備完了後:
-   - 開発者A: US1
-   - 開発者B: US2
-   - 開発者C: US3
-3. ストーリー毎に独立テストとドキュメント更新を完了させる。
+With multiple developers:
+
+1. Team completes Setup + Foundational together
+2. Once Foundational is done:
+   - Developer A: User Story 1
+   - Developer B: User Story 2
+   - Developer C: User Story 3
+3. Stories complete and integrate independently
 
 ---
 
-## メモ
+## Notes
 
-- `[P]` タスク = 依存関係が無く並列実行可能。
-- `[Story]` ラベルでストーリー単位のトレーサビリティを確保する。
-- 各ストーリーは単独で完成・テストできる状態に保つ。
-- テストは必ず先に実装し、失敗を確認してから機能実装に進む。
-- コミットはタスク単位または論理的なまとまりで行い、関連仕様を参照する。
-- 憲章原則（DDD 層構造、仕様ドリブン、テストファースト、ドキュメント同期）に適合しないタスクは正当化し記録する。
+- [P] tasks = different files, no dependencies
+- [Story] label maps task to specific user story for traceability
+- Each user story should be independently completable and testable
+- Verify tests fail before implementing
+- Commit after each task or logical group
+- Stop at any checkpoint to validate story independently
+- Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence

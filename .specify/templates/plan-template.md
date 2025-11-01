@@ -1,156 +1,104 @@
-# 実装計画: [FEATURE]
+# Implementation Plan: [FEATURE]
 
-**ブランチ**: `[###-feature-name]` | **日付**: [DATE] | **仕様**: [link]  
-**入力**: `/specs/[###-feature-name]/spec.md` のフィーチャ仕様
+**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
-**メモ**: `/speckit.plan` コマンドが本テンプレートを出力する。運用手順はリポジトリのドキュメントで最新状態を確認する。
+**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
-## サマリー
+## Summary
 
-[仕様からの抜粋: 主要求と調査で決定した技術アプローチを要約する]
+[Extract from feature spec: primary requirement + technical approach from research]
 
-## 技術コンテキスト
+## Technical Context
 
-**使用言語 / バージョン**: Node.js LTS + TypeScript/JavaScript（不明な場合は要確認と記載）  
-**主要依存関係**: 例) Express, NestJS, Prisma（未確定なら要確認）  
-**ストレージ**: 例) PostgreSQL, DynamoDB, ファイル, N/A  
-**テスト基盤**: 例) Jest, Vitest, Playwright（不足時は要確認）  
-**対象プラットフォーム**: 例) Linux サーバー, AWS Lambda など  
-**プロジェクト種別**: 単一リポジトリ / Web / モノレポなど  
-**性能目標**: ドメインに依存。例) p95 < 200ms, 100rq/s  
-**制約**: ドメイン / 法規制 / インフラ制約を列挙（AWS 運用前提、Kinesis、LocalStack との整合性を含める）  
-**規模・スコープ**: 想定ユーザー数やユースケース範囲
-**フロント/BFF/GraphQL**: Next.js UI, Next.js API Routes(BFF), GraphQL サーバ（ドメインロジック）の利用方法と分担
-**永続化/投影**: コマンド側 DynamoDB、リードモデル MySQL、Read Model Updater（AWS Lambda）の構成と差分
-**ワークスペース/パッケージ**: `references/cqrs-es-example-js/packages` 構成との対応、採用するワークスペースツール、層ごとの依存ルール
+<!--
+  ACTION REQUIRED: Replace the content in this section with the technical details
+  for the project. The structure here is presented in advisory capacity to guide
+  the iteration process.
+-->
 
-## 憲章準拠チェック
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [single/web/mobile - determines source structure]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
-*ゲート条件: フェーズ0（リサーチ）着手前とフェーズ1（設計）完了時に必ず確認する。*
+## Constitution Check
 
-- ドメイン中心アーキテクチャ: 依存方向が `interfaces → application → domain` のみになっているか。
-- 仕様駆動の意思決定: `/specs/` の仕様に受入基準・制約・ドメイン影響が記載されているか。
-- ユースケース単位のモジュール性: 対象ユースケースが独立実装・独立デプロイ可能な粒度か。
-- テストファースト検証: 必要なテスト種別（単体・契約・統合）が洗い出され、タスク化されているか。
-- ドキュメント同期と追跡性: 本計画と仕様・タスク間のリンクが存在し、更新フローが明示されているか。
-- ドメインモデル開発手順: ドメイン→インメモリリポジトリ→ユースケース→アダプタ→統合テストの順序が維持されているか。
-- クリーンアーキテクチャ構造: 層ごとの責務と依存方向（`interfaces → application → domain`）が守られ、横断的関心事はインフラストラクチャ層に限定されているか。
-- CQRS/Event Sourcing: コマンド・クエリ分離、イベントストア構成、`@j5ik2o/event-store-adapter-js` の利用計画が定義されているか。
-- エラーハンドリング戦略: 回復可能性に基づき戻り値型（Either/Result 等）と例外使用境界が定義されているか。
-- クラウド基盤とローカル検証: AWS で運用するサービス（GraphQL API、イベントストア、Kinesis 等）と LocalStack/docker compose による検証手順が明記されているか。
-- プレゼンテーションと BFF: GraphQL サーバにドメインロジックを集約し、Next.js API Routes が BFF、Next.js が純粋なプレゼンテーションになる設計が成立しているか。
-- 永続化ストアとリードモデル: DynamoDB をコマンド側に、MySQL をリードモデルに用い、Read Model Updater を AWS Lambda で実装する計画が定義されているか。
-- パッケージ構成と依存制御: `references/cqrs-es-example-js/packages` に基づくパッケージ分割と依存ルールが定義され、逆依存がビルドエラーになる仕組みを整備しているか。
-- GraphQL アクセス方針: ブラウザ側は API Routes 経由、RSC は共有トークンモジュール経由で GraphQL に直接アクセスする設計が明文化されているか。
+*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-## プロジェクト構成
+[Gates determined based on constitution file]
 
-### ドキュメント（このフィーチャ）
+## Project Structure
+
+### Documentation (this feature)
 
 ```text
 specs/[###-feature]/
-├── plan.md              # 本テンプレート（/speckit.plan 出力）
-├── research.md          # フェーズ0成果物（/speckit.plan 出力）
-├── data-model.md        # フェーズ1成果物（/speckit.plan 出力）
-├── quickstart.md        # フェーズ1成果物（/speckit.plan 出力）
-├── contracts/           # フェーズ1成果物（/speckit.plan 出力）
-└── tasks.md             # フェーズ2成果物（/speckit.tasks 出力。/speckit.plan では生成しない）
+├── plan.md              # This file (/speckit.plan command output)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
+└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
 ```
 
-### ソースコード（リポジトリルート）
+### Source Code (repository root)
+<!--
+  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
+  for this feature. Delete unused options and expand the chosen structure with
+  real paths (e.g., apps/admin, packages/something). The delivered plan must
+  not include Option labels.
+-->
 
 ```text
-packages/
-├── command/
-│   ├── domain/                   # ドメインモデル（集約メソッドとしてコマンドを実装）
-│   ├── processor/                # ユースケース/アプリケーションサービス
-│   ├── interface-adaptor-if/     # ポート定義（契約）
-│   └── interface-adaptor-impl/   # 実装（GraphQL リゾルバ、リポジトリ等、イベントストアアダプタ）
-├── query/
-│   └── interface-adaptor/        # 読み取りモデルの API / 投影
-├── rmu/                          # Read Model Updater（Lambda 等）
-├── infrastructure/               # クロスカッティング（ロギング、設定等）
-└── bootstrap/                    # エッジアプリ（GraphQL サーバ、CLI）
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+src/
+├── models/
+├── services/
+├── cli/
+└── lib/
 
 tests/
-├── unit/         # パッケージ毎のユニットテスト (例: packages/**/src/**/*.test.ts)
-├── contract/     # ポート・アダプタ契約テスト
-└── integration/  # サブプロジェクト統合テスト
+├── contract/
+├── integration/
+└── unit/
+
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
+
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+└── tests/
+
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**構成方針**: [このフィーチャで利用するパッケージ構成と `references/cqrs-es-example-js/packages` との差分を説明する]
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
-## ドメインモデル開発計画
+## Complexity Tracking
 
-1. **ドメインテスト**: [作成するテストスイートとカバーするエッジケースを列挙する]
-2. **モデル実装**: [値オブジェクト・エンティティ・集約で扱う不変条件や振る舞いを記述する。Primitive Obsession を避け、金額・数量などのドメイン値は専用の値オブジェクトで表現する]
-3. **バリデーション方針**: [値オブジェクトのコンストラクタで検証し、成功時は値オブジェクトを返し、失敗時はエラーを返す設計を明記する]
-4. **リファクタリング**: [責務整理・命名統一の観点を示す]
-5. **インメモリリポジトリ**: [テスト用リポジトリの実装方針と扱う操作を明記する]
-6. **ユースケース実装**: [実装順と必要なポート・サービス・エラー処理を説明する]
-7. **アダプタ実装**: [永続化・API・UI など外部との接続順序を定義する]
-8. **統合・結合テスト**: [使用するインフラ・テスト範囲・成功判定基準を記述する]
+> **Fill ONLY if Constitution Check has violations that must be justified**
 
-## エラーハンドリング計画
-
-- **回復可能エラー**: [Either/Result 等で返却するエラー種別、ユースケースでの対処方法（リトライ・代替フロー・通知）]
-- **回復不能エラー**: [例外/ panic を使用する箇所と根拠、ログ・監視の方法]
-- **例外変換方針**: [インフラ層で捕捉しドメイン向け型へ変換するルール]
-- **命名規則**: [エラー型の命名および責務]
-
-## CQRS/Event Sourcing 設計
-
-- **コマンドモデル**: [ハンドラ、集約、コマンド名、整合性制約、ユースケースとの関連。コマンドは集約が公開するメソッドとして実装し（例: `group-chat.ts`）、独立したコマンドクラスを作成しないこと。イベント保存が主目的である一方、リプレイや他集約確認など必要な読み込みの範囲を明記し、発生させるドメインイベントは専用ファイル（例: `group-chat-events.ts`）で定義すること]
-- **クエリモデル**: [リードモデル、投影更新方式、最終的整合性の扱い。ドメインモデル・リポジトリを使用せずリードデータベースへ直接アクセスする設計]
-- **イベントスキーマ**: [イベント名、ペイロード、バージョニング/アップキャスト方針]
-- **イベントストア構成**: [`@j5ik2o/event-store-adapter-js` の接続設定、ストリーム命名規約、スナップショット]
-- **イベントバス**: [AWS Kinesis Data Streams のストリーム設計、パーティションキー、サブスクリプション/GraphQL 連携、LocalStack での代替設定]
-- **運用・テスト**: [イベントリプレイ、障害時の復旧手順、負荷試験計画]
-
-## プレゼンテーションと BFF 設計
-
-- **GraphQL サーバ**: [Mutation/Query/Subscription とユースケースの対応、ドメイン層の配置、インフラ依存の扱い]
-- **BFF (Next.js API Routes)**: [GraphQL クライアント実装、セッション/トークン管理、入力検証、レスポンス整形]
-- **Next.js UI**: [SSR/CSR/ISR の使い分け、BFF との通信方法、GraphQL サブスクリプション受信フロー]
-- **エラーハンドリング**: [BFF でのエラーマッピング、UI への通知、監査ログとの連携]
-- **監視・計測**: [GraphQL サーバと BFF のメトリクス/ログ、分散トレーシング]
-- **アクセスポリシー**: [クライアントコンポーネントは API Route 経由で GraphQL を利用し、RSC は共有トークン管理モジュールから GraphQL に直接アクセスする設計を記述する]
-
-## 永続化と投影設計
-
-- **コマンド永続化**: [DynamoDB テーブル設計、パーティション/ソートキー、RCU/WCU、TTL、セキュリティ]
-- **イベントストア**: [DynamoDB + `@j5ik2o/event-store-adapter-js` の利用方法、スナップショットテーブル、ストリーム設定]
-- **リードモデル**: [MySQL スキーマ設計、インデックス、マイグレーション手順、接続プール]
-- **Read Model Updater**: [AWS Lambda 実装方針、デプロイパイプライン、Kinesis トリガ、リトライ/デッドレター設定]
-- **ローカル/CI**: [LocalStack + MySQL コンテナの起動手順、Lambda 実行の代替（ローカル Node.js/ AWS SAM など）、テストデータのシーディング]
-- **監視/運用**: [DynamoDB/ MySQL/ Lambda のメトリクス、アラート設定、コスト管理]
-- **テーブルフォーマット**: [`references/cqrs-es-example-js/tools/dynamodb-setup/create-tables.sh` を参照し、ジャーナル/スナップショットテーブルの形式と差分を記載する]
-
-## リポジトリ構成と依存制御
-
-- **ワークスペース管理**: [pnpm の workspace 設定、`packages/` 配置、turbo 等のビルドスクリプト]
-- **パッケージ構造**: [`references/cqrs-es-example-js/packages` に基づく各層のサブプロジェクト一覧と対応関係（domain/application/interface/infrastructure/rmu 等）]
-- **依存ルール**: [層の依存方向、`package.json` の依存宣言、TypeScript プロジェクトリファレンス、ESLint/biome ルールでの検証方法]
-- **ビルドガード**: [turbo や自動テストで逆依存を検出する仕組み、CI でのチェック手順]
-- **ドキュメント化**: [README/plan/spec へ反映するガイドライン、差異発生時の記録方法]
-
-## リファレンス資産の活用
-
-- **イベントストア実装**: `references/event-store-adapter-js` のどのモジュール・設定を参照するかを記述し、コードコピーを行わず設計意図のみ取り込むことを明示。
-- **CQRS サンプル**: `references/cqrs-es-example-js` のコマンド/クエリ/投影の参照箇所と、本計画との違い・対応策を明示（参照のみでありコピー禁止）。
-- **ライセンス対応**: 取り込むコードのライセンス表記方法と改変内容の記録方法。
-- **レビュー観点**: リファレンスとの差異をレビューで検証するチェック項目。
-
-## 複雑性トラッキング
-
-> **憲章準拠チェックで違反がある場合のみ記入する。**
-
-| 違反内容 | 必要な理由 | 却下した単純代替案と理由 |
-|----------|------------|----------------------------|
-| [例: 追加レイヤー導入] | [必要性] | [採用しなかった代替案] |
-## レイヤー責務確認
-
-- **ドメイン層**: [扱うエンティティ・値オブジェクト・ドメインサービスと、ドメインサービスが純粋関数であり外部依存を持たないことを明記]
-- **ユースケース層**: [実装予定のアプリケーションサービス、依存するポート、イベントやフロー制御の設計]
-- **インターフェースアダプタ層**: [コントローラ・ゲートウェイ・リポジトリ実装、外部システムとの変換方針]
-- **インフラストラクチャ層**: [提供する共通ユーティリティ（ロギング・ID生成・設定など）と IO を持たない証跡。RPC やデータベースアクセスを実装しない旨を明記]
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |

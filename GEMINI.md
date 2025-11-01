@@ -19,3 +19,5 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 - すべて日本語でやりとりすること
 - ソースコード以外の生成されるファイルも日本語で記述すること
+
+@.specify/memory/constitution.md
