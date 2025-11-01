@@ -3,4 +3,73 @@ name = "cqrs-es-spec-kit-rs"
 version = "0.1.0"
 edition = "2024"
 
+# ============================================
+# イベントソーシング・CQRS基盤
+# ============================================
 [dependencies]
+# 基本的なユーティリティ
+uuid = { version = "1.11", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# 非同期ランタイム
+tokio = { version = "1.41", features = ["full"] }
+tokio-util = { version = "0.7", features = ["full"] }
+async-trait = "0.1"
+
+# ============================================
+# ドメイン駆動設計・エラーハンドリング
+# ============================================
+thiserror = "2.0"
+anyhow = "1.0"
+typed-builder = "0.20"
+
+# ============================================
+# GraphQL・Webフレームワーク
+# ============================================
+async-graphql = { version = "7.0", features = ["chrono", "uuid"] }
+async-graphql-axum = "7.0"
+axum = { version = "0.8", features = ["macros"] }
+tower = { version = "0.5", features = ["full"] }
+tower-http = { version = "0.6", features = ["trace", "cors", "compression-full"] }
+
+# ============================================
+# AWS SDK
+# ============================================
+aws-config = { version = "1.5", features = ["behavior-version-latest"] }
+aws-sdk-dynamodb = "1.55"
+aws-sdk-kinesis = "1.51"
+aws-sdk-ses = "1.51"
+aws-sdk-secretsmanager = "1.52"
+aws_lambda_events = { version = "0.15", default-features = false, features = ["dynamodb", "kinesis"] }
+lambda_runtime = "0.13"
+
+# ============================================
+# データベース・ストレージ
+# ============================================
+sqlx = { version = "0.8", features = ["runtime-tokio", "mysql", "chrono", "uuid"] }
+redis = { version = "0.27", features = ["tokio-comp", "connection-manager"] }
+
+# ============================================
+# ロギング・可観測性
+# ============================================
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+tracing-appender = "0.2"
+
+# ============================================
+# セキュリティ・バリデーション
+# ============================================
+bcrypt = "0.16"
+validator = { version = "0.18", features = ["derive"] }
+regex = "1.11"
+rand = "0.8"
+
+# ============================================
+# 開発・テスト用依存
+# ============================================
+[dev-dependencies]
+mockall = "0.13"
+tokio-test = "0.4"
+testcontainers = "0.23"
